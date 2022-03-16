@@ -6,65 +6,79 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 23:46:38 by adesvall          #+#    #+#             */
-/*   Updated: 2022/01/14 00:36:25 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/16 16:50:44 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STACK_H
-# define STACK_H
+#ifndef STACK_HPP
+# define STACK_HPP
 
-#include <stack>
+#include <vector> // a changer
 
 namespace ft {
-// template <class T, class Container = Cell<T> > class stack;
 
-	template<class T,  class Container = Cell<T>>
-	class Stack
-	{
-	private:
-		size_t		size;
-		Container* 	head;
+template <class T, class Container = std::vector<T> >
+class stack
+{
+public:
+	typedef T			value_type;
+	typedef Container	container_type;
+	typedef size_t		size_type;
 
-	public:
-		Stack();
-		~Stack();
+	explicit stack (const container_type& ctnr = container_type())	: head(ctnr)	{}
+	virtual ~stack()	{}
 
-		bool		empty();
-		size_t		size();
-		void		push(T truc);
-		T			pop();
-	
-	};
-
-	Stack::Stack() : head(NULL), size(0)
-	{}
-
-	Stack::~Stack()
-	{}
-
-	
-	template<class T>
-	class Cell 
-	{
-	private:
-		T value;
-		Cell *next;
-
-	public:
-		Cell();
-		~Cell();
-		empty
-	
-	Cell::Cell() : next(NULL)
-	{
-		
+	bool		empty()	const	{
+		return head.empty();
 	}
 
-	Cell::~Cell()
-	{
-		
+	size_type	size()	const	{
+		return head.size();
 	}
+
+	void		push(const value_type& val)	{
+		return head.push_back(val);
 	}
+
+	void		pop()	{
+		head.pop_back();
+	}
+	
+	value_type& top()	{
+		return head.back();
+	}
+	const value_type& top() const	{
+		return head.back();
+	}
+
+	friend
+	bool operator== (const stack<T,Container>& lhs, const stack<T,Container>& rhs)	{
+		return lhs.head == rhs.head;
+	}
+	friend
+	bool operator!= (const stack<T,Container>& lhs, const stack<T,Container>& rhs)	{
+		return lhs.head != rhs.head;
+	}
+	friend
+	bool operator<  (const stack<T,Container>& lhs, const stack<T,Container>& rhs)	{
+		return lhs.head < rhs.head;
+	}
+	friend
+	bool operator<= (const stack<T,Container>& lhs, const stack<T,Container>& rhs)	{
+		return lhs.head <= rhs.head;
+	}
+	friend
+	bool operator>  (const stack<T,Container>& lhs, const stack<T,Container>& rhs)	{
+		return lhs.head > rhs.head;
+	}
+	friend
+	bool operator>= (const stack<T,Container>& lhs, const stack<T,Container>& rhs)	{
+		return lhs.head >= rhs.head;
+	}
+
+protected:
+	container_type 	head;
+};
 
 }
 
