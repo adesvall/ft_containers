@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/16 17:56:07 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/16 20:19:47 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,41 @@ class vector
 	typedef allocator_type::const_reference		const_reference;
 	typedef allocator_type::pointer				pointer;
 	typedef allocator_type::const_pointer		const_pointer;
-	typedef 
-	typedef typename std::iterator<std::iterator::> forward_iterator;
-	typedef typename std::iterator<std::> forward_iterator;
+	typedef std::iterator<T>				iterator;
+	typedef	std::const_iterator<T>			const_iterator;
+	typedef std::reverse_iterator<iterator>			reverse_iterator;
+	typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
+	typedef iterator_traits<iterator>::difference_type	difference_type;
+	typedef size_t	size_type;
 
 public:
-	vector(/* args */);
-	~vector();
-
-	forward_iterator begin() {
-		return iterator<;
+	explicit vector(const allocator_type& alloc = allocator_type()) : tab(NULL), A(alloc)	{
+		
+	}
+	explicit vector(size_type n, const value_type& val = value_type(),
+					const allocator_type& alloc = allocator_type())
+	{
+		tab = alloc.allocate(n);
+		size = n;
+		A = alloc;
 	}
 
-	backward_iterator end() {
-		return data + size;
+	template <class InputIterator>
+	vector(InputIterator first, InputIterator last,
+ 			const allocator_type& alloc = allocator_type()) {
+		tab = alloc.allocate(n);
+	}
+	vector(const vector& v)	{}
+	~vector();
+
+
+
+	iterator begin() {
+		return iterator(tab);
+	}
+
+	iterator end() {
+		return iterator(tab) + size;
 	}
 
 	T* rbegin() {
@@ -48,16 +69,10 @@ public:
 	}
 
 private:
-	T		*data;
-	size_t	size;
+	T				*tab;
+	size_t			size;
+	allocator_type	A;
 };
-
-vector::vector() : data(NULL)
-{}
-
-vector::~vector()
-{
-}
 
 }
 
