@@ -48,14 +48,14 @@ public:
 	T	&operator*()	{
 		return *ptr;
 	}
-	const T		&operator*() const	{
+	const T		&operator*()	{
 		return *ptr;
 	}
 
 	T	*operator->()	{
 		return ptr;
 	}
-	const T	*operator->() const		{
+	const T	*operator->()	{
 		return ptr;
 	}
 

@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/16 20:19:47 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/17 17:28:25 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ class vector
 	typedef size_t	size_type;
 
 public:
-	explicit vector(const allocator_type& alloc = allocator_type()) : tab(NULL), A(alloc)	{
+	explicit vector(const allocator_type& alloc = allocator_type())
+	: tab(NULL), A(alloc)	{
 		
 	}
 	explicit vector(size_type n, const value_type& val = value_type(),
@@ -43,6 +44,7 @@ public:
 	{
 		tab = alloc.allocate(n);
 		size = n;
+		capacity = n;
 		A = alloc;
 	}
 
@@ -51,26 +53,135 @@ public:
  			const allocator_type& alloc = allocator_type()) {
 		tab = alloc.allocate(n);
 	}
-	vector(const vector& v)	{}
-	~vector();
+	vector(const vector& v)	{
+		//
+	}
+	~vector()	{
+		for (int i = 0; i < size; i++)	{
+			A.destroy(&tab[i]);
+		}
+		A.deallocate(tab, capacity);
+	}
 
 
-
+// ITERATOR
 	iterator begin() {
 		return iterator(tab);
+	}
+	const_iterator begin() const	{
+		return const_iterator(tab);
 	}
 
 	iterator end() {
 		return iterator(tab) + size;
 	}
-
-	T* rbegin() {
-		
+	const_iterator end() const	{
+		return const_iterator(tab) + size;
 	}
 
+	reverse_iterator rbegin() {
+		return reverse_iterator(tab);
+	}
+	const_reverse_iterator rbegin() {
+		return const_reverse_iterator(tab);
+	}
+
+	reverse_iterator rend() {
+		return reverse_iterator(tab) + size;
+	}
+	const_reverse_iterator rend() {
+		return const_reverse_iterator(tab) + size;
+	}
+
+// CAPACITY
+	size_type	size()	const	{
+		return size;
+	}
+
+	size_type	max_size() const	{
+		size_type t();
+		try	{
+			return A.max_size();
+		}
+		catch(const std::exception& e)	{
+			std::cerr << e.what() << '\n';
+		}
+		return -1;
+	}
+	
+	void	resize (size_type n, value_type val = value_type())	{
+		if (n <= size)	{
+			for (int i = n; i < size; i++)
+				A.destroy(&tab[i]);
+			return;
+		}
+		if (n > capacity)
+			reserve(2 * n);
+		for (int i = size; i < n; i++)
+			A.construct(&tab[i], val);
+		size = n;
+	}
+
+	size_type	capacity() const	{
+		return capacity;
+	}
+
+	bool	empty() const	{
+		return size == 0;
+	}
+
+	void	reserve(size_type n)	{
+		if (n <= capacity)
+			return ;
+		value_type* new_tab = A.allocate(n);
+		for (int i = 0; i < size; i++)	{
+			A.construct(&new_tab[i], tab[i]);
+			// truc[i] = tab[i];
+			A.destroy(&tab[i]);
+		}
+		A.deallocate(tab, capacity);
+		capacity = n;
+		tab = new_tab;
+	}
+
+// ELEMENT ACCESS
+	reference	operator[](size_type i)	{
+		return tab[i];
+	}
+	const_reference	operator[](size_type i) const	{
+		return tab[i];
+	}
+
+	reference		at(size_type i)	{
+		if (i >= size)
+			throw std::out_of_range();
+		return tab[i];}
+	const_reference	at(size_type i) const	{
+		if (i >= size)
+			throw std::out_of_range();
+		return tab[i];}
+	
+	reference 		front()	{
+		return tab[0];}
+	const_reference front() const	{
+		return tab[0];}
+	
+	reference 		back()	{
+		return tab[size - 1];}
+	const_reference back() const	{
+		return tab[size - 1];}
+
+// MODIFIERS
+	template <class InputIterator>
+	void assign (InputIterator first, InputIterator last)	{
+		
+	}
+	void assign (size_type n, const value_type& val);
+
 private:
-	T				*tab;
-	size_t			size;
+	value_type		*tab;
+	size_type		size;
+	size_type		capacity;
 	allocator_type	A;
 };
 
