@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/19 18:59:46 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/20 00:26:54 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,10 @@ public:
 	}
 
 	reverse_iterator rend() {
-		return reverse_iterator(tab) + size;
+		return reverse_iterator(tab + size);
 	}
 	const_reverse_iterator rend() {
-		return const_reverse_iterator(tab) + size;
+		return const_reverse_iterator(tab + size);
 	}
 
 // CAPACITY
@@ -206,18 +206,78 @@ public:
 	}
 
 	iterator insert (iterator position, const value_type& val)	{
-		;
+		reserve(size + 1);
+		for (iterator it = rend(); it =! position; it++)
+		{
+			A.construct(it, *(it + 1));
+			A.destruct(it);
+		}
+		A.construct(it, val);
+		size++;
+		return position;
 	}
 
     void insert (iterator position, size_type n, const value_type& val)	{
-		;
+		difference_type i = std::distance(begin, position);
+		reserve(size + n);
+		position = begin() + i;
+		for (iterator it = end() + n - 1; it =! position + n - 1; it--)
+		{
+			A.construct(it, *(it + 1));
+			A.destruct(it);
+		}
+		for (int i = 0; i < n; i++)
+			A.construct(position++, val);
+		size += n;
 	}
 	
 	template <class InputIterator>
     void insert (iterator position, InputIterator first, InputIterator last)	{
-		;
+		typename InputIterator::difference_type n = std::distance(first, last);
+		difference_type i = std::distance(begin, position);
+		reserve(size + n);
+		position = begin() + i;
+		for (iterator it = end() + n - 1; it =! position + n - 1; it--)
+		{
+			A.construct(it, *(it + 1));
+			A.destruct(it);
+		}
+		for (;first != last; ++first)
+			A.construct(position++, *first);
+		size += n;
 	}
 
+	iterator erase (iterator position)	{
+		A.destruct(position);
+		for (; position != end(); position++)	{
+			A.construct(position, *(position + 1));
+			A.destruct(position + 1);
+		}
+		size--;
+		return position;
+	}
+	iterator erase (iterator first, iterator last)	{
+		iterator ret = first;
+		iterator tmp = first;
+		difference_type i = std::distance(first, last);
+
+		for (; tmp != last; tmp++)
+			A.destruct(tmp);
+		for (; tmp != end(); tmp++)	{
+			A.construct(first, *tmp);
+			A.destruct(tmp);
+			first++;
+		}
+		size -= i;
+		return ret;
+	}
+
+	void swap(vector& x)	{
+		swap(tab, x.tab);
+		swap(size, x.size);
+		swap(capacity, x.capacity);
+		swap(A, x.A);
+	}
 	
 
 private:
@@ -226,11 +286,22 @@ private:
 	size_type		capacity;
 	allocator_type	A;
 
+	void	copy_content(){}
+
 	void	destroy_content(int begin = 0, int end = size)	{
 		for (int i = begin; i < end; i++)
 			A.destroy(&tab[i]);
 	}
 };
+
+template <typename T>
+void	swap(T& a, T& b)	{
+	T tmp;
+
+	tmp = a;
+	a = b;
+	b = tmp;
+}
 
 }
 
