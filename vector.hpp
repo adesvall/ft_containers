@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/17 17:28:25 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/19 18:59:46 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ namespace ft {
 template<class T, class Alloc = std::allocator<T> >
 class vector
 {
+public:
 	typedef T							value_type;
 	typedef Alloc						allocator_type;
 	typedef allocator_type::reference			reference;
@@ -34,7 +35,6 @@ class vector
 	typedef iterator_traits<iterator>::difference_type	difference_type;
 	typedef size_t	size_type;
 
-public:
 	explicit vector(const allocator_type& alloc = allocator_type())
 	: tab(NULL), A(alloc)	{
 		
@@ -115,8 +115,7 @@ public:
 				A.destroy(&tab[i]);
 			return;
 		}
-		if (n > capacity)
-			reserve(2 * n);
+		reserve(n);
 		for (int i = size; i < n; i++)
 			A.construct(&tab[i], val);
 		size = n;
@@ -133,6 +132,10 @@ public:
 	void	reserve(size_type n)	{
 		if (n <= capacity)
 			return ;
+		new_capacity = capacity;
+		while (new_capacity <= n)
+			new_capacity *= 2;
+		n = new_capacity;
 		value_type* new_tab = A.allocate(n);
 		for (int i = 0; i < size; i++)	{
 			A.construct(&new_tab[i], tab[i]);
@@ -174,15 +177,59 @@ public:
 // MODIFIERS
 	template <class InputIterator>
 	void assign (InputIterator first, InputIterator last)	{
-		
+		for (int i = 0; i < size; i++)
+			A.destroy(&tab[i]);
+		size = 0;
+		reserve(std::distance(first, last));
+		for (int i = 0; first != last; ++first && ++i)
+			A.construct(&tab[i], *first)
+		size = i;
 	}
-	void assign (size_type n, const value_type& val);
+	void assign (size_type n, const value_type& val)	{
+		for (int i = 0; i < size; i++)
+			A.destroy(&tab[i]);
+		reserve(n);
+		for (int i = 0; i < n; i++)
+			A.construct(&tab[i], val);
+		size = n;
+	}
+
+	void	push_back(const value_type& val)	{
+		reserve(size + 1);
+		A.construct(&tab[size], val);
+		size++;
+	}
+
+	void	pop_back()	{
+		size--;
+		A.destroy(&tab[size]);
+	}
+
+	iterator insert (iterator position, const value_type& val)	{
+		;
+	}
+
+    void insert (iterator position, size_type n, const value_type& val)	{
+		;
+	}
+	
+	template <class InputIterator>
+    void insert (iterator position, InputIterator first, InputIterator last)	{
+		;
+	}
+
+	
 
 private:
 	value_type		*tab;
 	size_type		size;
 	size_type		capacity;
 	allocator_type	A;
+
+	void	destroy_content(int begin = 0, int end = size)	{
+		for (int i = begin; i < end; i++)
+			A.destroy(&tab[i]);
+	}
 };
 
 }
