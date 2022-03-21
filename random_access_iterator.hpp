@@ -1,10 +1,21 @@
 #ifndef RANDOM_ACCESS_ITERATOR_HPP
 # define RANDOM_ACCESS_ITERATOR_HPP
 
+#include "iterator_traits.hpp"
+
+namespace	ft
+{
+
 template <class T>
 class	random_access_iterator
 {
 public:
+	typedef	size_t	difference_type;
+	typedef T			value_type;
+	typedef T*			pointer;
+	typedef T&			reference;
+	typedef random_access_iterator_tag	iterator_category;
+
 	random_access_iterator() : ptr(NULL)	{}
 	random_access_iterator(T *ptr) : ptr(ptr)	{}
 	random_access_iterator(random_access_iterator &rit) : ptr(rit.ptr)	{}
@@ -48,14 +59,14 @@ public:
 	T	&operator*()	{
 		return *ptr;
 	}
-	const T		&operator*()	{
+	const T		&operator*() const	{
 		return *ptr;
 	}
 
 	T	*operator->()	{
 		return ptr;
 	}
-	const T	*operator->()	{
+	const T	*operator->() const	{
 		return ptr;
 	}
 
@@ -68,8 +79,8 @@ public:
 	}
 
 	friend
-	random_access_iterator	&operator+(int n, random_access_operator &rit)	{
-		return random_access_iterator(ptr + n);
+	random_access_iterator	&operator+(int n, random_access_iterator &rit)	{
+		return rit + n;
 	}
 
 	int		operator-(random_access_iterator &rit)	{
@@ -98,6 +109,8 @@ public:
 
 private:
 	T	*ptr;
+};
+
 }
 
 #endif
