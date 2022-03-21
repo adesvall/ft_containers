@@ -12,17 +12,19 @@ class	random_access_iterator
 {
 public:
 	typedef	size_t	difference_type;
-	typedef typename choose<isConst, const T, T>::type		value_type;
+	typedef typename choose<isConst, const T, T>::type			value_type;
 	typedef typename choose<isConst, const T, T>::type*			pointer;
 	typedef typename choose<isConst, const T, T>::type&			reference;
-	typedef random_access_iterator_tag		iterator_category;
+	typedef random_access_iterator_tag							iterator_category;
+	typedef random_access_iterator<!isConst, T>					other_type;
 
 	random_access_iterator() : ptr(NULL)	{}
 	random_access_iterator(T *ptr) : ptr(ptr)	{}
-	random_access_iterator(random_access_iterator &rit) : ptr(rit.ptr)	{
-		ptr = rit.ptr;
-	}
+	random_access_iterator(random_access_iterator &rit) : ptr(rit.ptr)	{}
 	~random_access_iterator()	{}
+
+	operator random_access_iterator<true, T> () const {return (random_access_iterator<true, T>(this->ptr)); }
+	// random_access_iterator(typename enable_if<!isConst, random_access_iterator<false, T> >::type &rit) : ptr(rit.ptr)	{}
 
 	random_access_iterator	&operator=(random_access_iterator	&rit)	{
 		ptr = rit.ptr;

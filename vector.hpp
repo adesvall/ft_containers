@@ -31,7 +31,7 @@ public:
 	typedef typename allocator_type::const_reference	const_reference;
 	typedef typename allocator_type::pointer			pointer;
 	typedef typename allocator_type::const_pointer		const_pointer;
-	typedef random_access_iterator<false, T>					iterator;
+	typedef random_access_iterator<false, T>			iterator;
 	typedef	random_access_iterator<true, T>				const_iterator;
 	typedef std::reverse_iterator<iterator>				reverse_iterator;
 	typedef std::reverse_iterator<const_iterator>		const_reverse_iterator;
@@ -90,6 +90,8 @@ public:
 			A.construct(&tab[i], v.tab[i]);
 		}
 	}
+
+
 
 // ITERATOR
 	iterator begin() {
@@ -200,7 +202,7 @@ public:
 
 // MODIFIERS
 	template <class InputIterator>
-	// void assign (typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	// void assign (typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first,
 	void assign (InputIterator first, InputIterator last)	{
 		destroy_content();
 		reserve(std::distance(first, last));

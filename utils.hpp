@@ -9,6 +9,7 @@ struct enable_if<true, IsTrue> {
 	typedef IsTrue type;
 };
 
+
 template <bool flag, class IsTrue, class IsFalse>
 struct choose;
 
