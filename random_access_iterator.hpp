@@ -2,23 +2,26 @@
 # define RANDOM_ACCESS_ITERATOR_HPP
 
 #include "iterator_traits.hpp"
+#include "utils.hpp"
 
 namespace	ft
 {
 
-template <class T>
+template <bool isConst, class T>
 class	random_access_iterator
 {
 public:
 	typedef	size_t	difference_type;
-	typedef T			value_type;
-	typedef T*			pointer;
-	typedef T&			reference;
-	typedef random_access_iterator_tag	iterator_category;
+	typedef typename choose<isConst, const T, T>::type		value_type;
+	typedef typename choose<isConst, const T, T>::type*			pointer;
+	typedef typename choose<isConst, const T, T>::type&			reference;
+	typedef random_access_iterator_tag		iterator_category;
 
 	random_access_iterator() : ptr(NULL)	{}
 	random_access_iterator(T *ptr) : ptr(ptr)	{}
-	random_access_iterator(random_access_iterator &rit) : ptr(rit.ptr)	{}
+	random_access_iterator(random_access_iterator &rit) : ptr(rit.ptr)	{
+		ptr = rit.ptr;
+	}
 	~random_access_iterator()	{}
 
 	random_access_iterator	&operator=(random_access_iterator	&rit)	{
@@ -104,6 +107,10 @@ public:
 	}
 
 	T	&operator[](int n)	{
+		return ptr[n];
+	}
+
+	const T	&operator[](int n) const	{
 		return ptr[n];
 	}
 

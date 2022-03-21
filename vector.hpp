@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/21 01:50:22 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/21 05:07:40 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <memory>
 #include <iterator>
 #include "random_access_iterator.hpp"
+#include <limits>
+
 
 namespace ft {
 
@@ -29,8 +31,8 @@ public:
 	typedef typename allocator_type::const_reference	const_reference;
 	typedef typename allocator_type::pointer			pointer;
 	typedef typename allocator_type::const_pointer		const_pointer;
-	typedef random_access_iterator<T>					iterator;
-	typedef	random_access_iterator<const T>				const_iterator;
+	typedef random_access_iterator<false, T>					iterator;
+	typedef	random_access_iterator<true, T>				const_iterator;
 	typedef std::reverse_iterator<iterator>				reverse_iterator;
 	typedef std::reverse_iterator<const_iterator>		const_reverse_iterator;
 	typedef typename iterator_traits<iterator>::difference_type	difference_type;
@@ -198,6 +200,7 @@ public:
 
 // MODIFIERS
 	template <class InputIterator>
+	// void assign (typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
 	void assign (InputIterator first, InputIterator last)	{
 		destroy_content();
 		reserve(std::distance(first, last));
