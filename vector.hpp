@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/22 13:55:58 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/22 14:51:54 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ public:
 	typedef typename allocator_type::const_pointer		const_pointer;
 	typedef random_access_iterator<false, T>			iterator;
 	typedef	random_access_iterator<true, T>				const_iterator;
-	typedef reverse_iterator<iterator>					reverse_iterator;
-	typedef reverse_iterator<const_iterator>			const_reverse_iterator;
+	typedef ft::reverse_iterator<iterator>					reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 	typedef typename iterator_traits<iterator>::difference_type	difference_type;
 	typedef size_t	size_type;
 
@@ -321,7 +321,7 @@ public:
 // REL. OPERATORS
 	template <class T2, class Alloc2>
 	friend
-	bool operator== (const vector<T2,Alloc2>& lhs, const vector<T2,Alloc2>& rhs)	{
+	bool operator== (const vector& lhs, const vector& rhs)	{
 		if (lhs._size != rhs._size)
 			return false;
 		for (int i = 0; i < rhs._size; i++)
@@ -332,13 +332,13 @@ public:
 
 	template <class T2, class Alloc2>
 	friend
-	bool operator!= (const vector<T2,Alloc2>& lhs, const vector<T2,Alloc2>& rhs)	{
+	bool operator!= (const vector& lhs, const vector& rhs)	{
 		return !(lhs == rhs);
 	}
 
 	template <class T2, class Alloc2>
 	friend
-	bool operator<  (const vector<T2,Alloc2>& lhs, const vector<T2,Alloc2>& rhs)	{
+	bool operator<  (const vector& lhs, const vector& rhs)	{
 		if (lhs._size != rhs._size)
 			return lhs.size < rhs._size;
 		for (int i = 0; i < rhs._size; i++)
@@ -347,27 +347,23 @@ public:
 		return false;
 	}
 
-	template <class T2, class Alloc2>
 	friend
-	bool operator<= (const vector<T2,Alloc2>& lhs, const vector<T2,Alloc2>& rhs)	{
+	bool operator<= (const vector& lhs, const vector& rhs)	{
 		return !(rhs < lhs);
 	}
 
-	template <class T2, class Alloc2>
 	friend
-	bool operator>  (const vector<T2,Alloc2>& lhs, const vector<T2,Alloc2>& rhs)	{
+	bool operator>  (const vector& lhs, const vector& rhs)	{
 		return rhs < lhs;
 	}
 
-	template <class T2, class Alloc2>
 	friend
-	bool operator>= (const vector<T2,Alloc2>& lhs, const vector<T2,Alloc2>& rhs)	{
+	bool operator>= (const vector& lhs, const vector& rhs)	{
 		return !(lhs < rhs);
 	}
 
-	template <class T2, class Alloc2>
 	friend
-	void swap (vector<T2,Alloc2>& x, vector<T2,Alloc2>& y)	{
+	void swap (vector& x, vector& y)	{
 		x.swap(y);
 	}
 
