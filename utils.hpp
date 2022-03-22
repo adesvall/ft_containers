@@ -28,8 +28,8 @@ struct choose<false, IsTrue, IsFalse> {
 
 
 template <typename I>
-typename I::diference_type	distance(I first, I last)	{
-	typename I::diference_type dist = 0;
+typename I::difference_type	distance(I first, I last)	{
+	typename I::difference_type dist = 0;
 
 	while (first != last)
 	{

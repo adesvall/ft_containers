@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/22 13:06:39 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/22 13:55:58 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 
 #include <memory>
 #include "random_access_iterator.hpp"
+#include "reverse_iterator.hpp"
 #include "utils.hpp"
 #include <limits>
-
 
 namespace ft {
 
@@ -33,8 +33,8 @@ public:
 	typedef typename allocator_type::const_pointer		const_pointer;
 	typedef random_access_iterator<false, T>			iterator;
 	typedef	random_access_iterator<true, T>				const_iterator;
-	typedef std::reverse_iterator<iterator>				reverse_iterator;
-	typedef std::reverse_iterator<const_iterator>		const_reverse_iterator;
+	typedef reverse_iterator<iterator>					reverse_iterator;
+	typedef reverse_iterator<const_iterator>			const_reverse_iterator;
 	typedef typename iterator_traits<iterator>::difference_type	difference_type;
 	typedef size_t	size_type;
 
@@ -207,7 +207,7 @@ public:
 	// void assign (InputIterator first, InputIterator last)
 	{
 		destroy_content();
-		reserve(distance(first, last));
+		reserve(ft::distance(first, last));
 		int i = 0;
 		for (; first != last; ++first)	{
 			A.construct(&tab[i], *first);
@@ -264,16 +264,16 @@ public:
 	template <class InputIterator>
     void insert (iterator position, InputIterator first, InputIterator last)	{
 		typename InputIterator::difference_type n = std::distance(first, last);
-		difference_type i = std::distance(begin(), position);
+		difference_type i = distance(begin(), position);
 		reserve(_size + n);
 		position = begin() + i;
 		for (iterator it = end() + n - 1; it != position + n - 1; it--)
 		{
-			A.construct(it, *(it + 1));
-			A.destroy(it);
+			A.construct(&(*it), *(it + 1));
+			A.destroy(&(*it));
 		}
 		for (;first != last; ++first)
-			A.construct(position++, *first);
+			A.construct(&(*position++), *first);
 		_size += n;
 	}
 

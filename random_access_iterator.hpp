@@ -47,7 +47,7 @@ public:
 		return *this;
 	}
 
-	random_access_iterator &operator--(int)	{
+	random_access_iterator operator--(int)	{
 		random_access_iterator it(*this);
 		ptr--;
 		return it;
@@ -118,7 +118,7 @@ public:
 	}
 
 	friend
-	difference_type	distance(random_access_iterator& first, random_access_iterator& last)	{
+	difference_type	distance(const random_access_iterator& first, const random_access_iterator& last)	{
 		return &(*last) - &(*first);
 	}
 
