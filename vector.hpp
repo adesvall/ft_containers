@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/22 12:14:55 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/22 13:06:39 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define VECTOR_H
 
 #include <memory>
-#include <iterator>
 #include "random_access_iterator.hpp"
+#include "utils.hpp"
 #include <limits>
 
 
@@ -39,9 +39,9 @@ public:
 	typedef size_t	size_type;
 
 	explicit vector(const allocator_type& alloc = allocator_type())
-	: tab(NULL), A(alloc), _size(0), _capacity(1)
+	: tab(NULL), _size(0), _capacity(1), A(alloc)
 	{
-		tab = alloc.allocate(1);	
+		tab = A.allocate(1);	
 	}
 	
 	explicit vector(size_type n, const value_type& val = value_type(),
@@ -79,7 +79,7 @@ public:
 		A.deallocate(tab, _capacity);
 	}
 
-	vector	operator=(const vector& v)	{
+	vector	&operator=(const vector& v)	{
 		destroy_content();
 		A.deallocate(tab, _capacity);
 		A = v.A;
@@ -89,6 +89,7 @@ public:
 		for (size_type i = 0; i < _size; i++)	{
 			A.construct(&tab[i], v.tab[i]);
 		}
+		return *this;
 	}
 
 
@@ -202,13 +203,16 @@ public:
 
 // MODIFIERS
 	template <class InputIterator>
-	// void assign (typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first,
-	void assign (InputIterator first, InputIterator last)	{
+	void assign (typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+	// void assign (InputIterator first, InputIterator last)
+	{
 		destroy_content();
-		reserve(std::distance(first, last));
+		reserve(distance(first, last));
 		int i = 0;
-		for (; first != last; ++first && ++i)
+		for (; first != last; ++first)	{
 			A.construct(&tab[i], *first);
+			i++;
+		}
 		_size = i;
 	}
 	void assign (size_type n, const value_type& val)	{
@@ -274,10 +278,10 @@ public:
 	}
 
 	iterator erase (iterator position)	{
-		A.destroy(position);
+		A.destroy(&(*position));
 		for (; position != end(); position++)	{
-			A.construct(position, *(position + 1));
-			A.destroy(position + 1);
+			A.construct(&(*position), *(position + 1));
+			A.destroy(&(*(position + 1)));
 		}
 		_size--;
 		return position;
@@ -285,13 +289,13 @@ public:
 	iterator erase (iterator first, iterator last)	{
 		iterator ret = first;
 		iterator tmp = first;
-		difference_type i = std::distance(first, last);
+		difference_type i = distance(first, last);
 
 		for (; tmp != last; tmp++)
-			A.destroy(tmp);
+			A.destroy(&(*tmp));
 		for (; tmp != end(); tmp++)	{
-			A.construct(first, *tmp);
-			A.destroy(tmp);
+			A.construct(&(*first), *tmp);
+			A.destroy(&(*tmp));
 			first++;
 		}
 		_size -= i;

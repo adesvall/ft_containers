@@ -36,7 +36,7 @@ public:
 		return *this;
 	}
 
-	random_access_iterator &operator++(int)	{
+	random_access_iterator operator++(int)	{
 		random_access_iterator it(*this);
 		ptr++;
 		return it;
@@ -53,11 +53,11 @@ public:
 		return it;
 	}
 
-	bool	operator==(random_access_iterator &rit) const	{
+	bool	operator==(const random_access_iterator &rit) const	{
 		return ptr == rit;
 	}
 
-	bool	operator!=(random_access_iterator &rit) const	{
+	bool	operator!=(const random_access_iterator &rit) const	{
 		return ptr != rit.ptr;
 	}
 
@@ -115,6 +115,11 @@ public:
 
 	const T	&operator[](int n) const	{
 		return ptr[n];
+	}
+
+	friend
+	difference_type	distance(random_access_iterator& first, random_access_iterator& last)	{
+		return &(*last) - &(*first);
 	}
 
 private:
