@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/22 15:35:33 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/22 16:59:31 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <memory>
 #include "random_access_iterator.hpp"
 #include "reverse_iterator.hpp"
+
+#include <iterator>
 #include "utils.hpp"
 #include <limits>
 
@@ -322,29 +324,26 @@ public:
 	}
 
 // REL. OPERATORS
-	template <class T2, class Alloc2>
 	friend
 	bool operator== (const vector& lhs, const vector& rhs)	{
 		if (lhs._size != rhs._size)
 			return false;
-		for (int i = 0; i < rhs._size; i++)
+		for (size_type i = 0; i < rhs._size; i++)
 			if (lhs.tab[i] != rhs.tab[i])
 				return false;
 		return true;
 	}
 
-	template <class T2, class Alloc2>
 	friend
 	bool operator!= (const vector& lhs, const vector& rhs)	{
 		return !(lhs == rhs);
 	}
-
-	template <class T2, class Alloc2>
+	
 	friend
 	bool operator<  (const vector& lhs, const vector& rhs)	{
 		if (lhs._size != rhs._size)
-			return lhs.size < rhs._size;
-		for (int i = 0; i < rhs._size; i++)
+			return lhs._size < rhs._size;
+		for (size_type i = 0; i < rhs._size; i++)
 			if (lhs.tab[i] != rhs.tab[i])
 				return lhs.tab[i] < rhs.tab[i];
 		return false;

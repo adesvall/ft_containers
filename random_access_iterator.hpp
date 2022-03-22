@@ -19,7 +19,7 @@ public:
 	// typedef random_access_iterator<!isConst, T>					other_type;
 
 	random_access_iterator() : ptr(NULL)	{}
-	random_access_iterator(T *ptr) : ptr(ptr)	{}
+	random_access_iterator(value_type *ptr) : ptr(ptr)	{}
 	random_access_iterator(const random_access_iterator &rit) : ptr(rit.ptr)	{}
 	~random_access_iterator()	{}
 
@@ -53,18 +53,11 @@ public:
 		return it;
 	}
 
-	T	&operator*()	{
+	reference	operator*() const	{
 		return *ptr;
 	}
 
-	const T		&operator*() const	{
-		return *ptr;
-	}
-
-	T	*operator->()	{
-		return ptr;
-	}
-	const T	*operator->() const	{
+	pointer		operator->() const	{
 		return ptr;
 	}
 
@@ -85,10 +78,7 @@ public:
 		return *this;
 	}
 
-	T	&operator[](int n)	{
-		return ptr[n];
-	}
-	const T	&operator[](int n) const	{
+	reference	operator[](int n) const	{
 		return ptr[n];
 	}
 
@@ -132,7 +122,7 @@ public:
 	}
 
 private:
-	T	*ptr;
+	pointer	ptr;
 };
 
 }
