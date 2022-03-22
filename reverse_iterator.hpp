@@ -19,7 +19,7 @@ public:
 	explicit reverse_iterator(iterator_type ite) : _base(ite)	{}
 	template <class Iter>
 	reverse_iterator(const reverse_iterator<Iter>& rev_it) : _base(rev_it.it)	{}
-	~reverse_iterator();
+	~reverse_iterator()	{}
 	
 	iterator_type base() const	{
 		return _base;

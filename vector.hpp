@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/22 14:51:54 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/22 15:35:33 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,34 +236,37 @@ public:
 
 	iterator insert (iterator position, const value_type& val)	{
 		reserve(_size + 1);
-		iterator it;
-		for (it = rend(); it != position; it++)
+		reverse_iterator it;
+		for (it = rend(); it != reverse_iterator(position); it++)
 		{
-			A.construct(it, *(it + 1));
-			A.destruct(it);
+			A.construct(&(*it), *(it + 1));
+			A.destroy(&(*it));
 		}
-		A.construct(it, val);
+		A.construct(&(*it), val);
 		_size++;
 		return position;
 	}
 
     void insert (iterator position, size_type n, const value_type& val)	{
-		difference_type i = std::distance(begin(), position);
+		difference_type i = ft::distance(begin(), position);
 		reserve(_size + n);
 		position = begin() + i;
 		for (iterator it = end() + n - 1; it != position + n - 1; it--)
 		{
-			A.construct(it, *(it + 1));
-			A.destruct(it);
+			A.construct(&(*it), *(it + 1));
+			A.destroy(&(*it));
 		}
-		for (size_type i = 0; i < n; i++)
-			A.construct(position++, val);
+		for (size_type i = 0; i < n; i++)	{
+			A.construct(&(*position), val);
+			position++;
+		}
 		_size += n;
 	}
 	
 	template <class InputIterator>
-    void insert (iterator position, InputIterator first, InputIterator last)	{
-		typename InputIterator::difference_type n = std::distance(first, last);
+    void insert (iterator position, typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first,
+									InputIterator last)	{
+		typename InputIterator::difference_type n = ft::distance(first, last);
 		difference_type i = distance(begin(), position);
 		reserve(_size + n);
 		position = begin() + i;

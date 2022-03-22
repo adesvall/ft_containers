@@ -13,10 +13,10 @@ class	random_access_iterator
 public:
 	typedef	size_t	difference_type;
 	typedef typename choose<isConst, const T, T>::type			value_type;
-	typedef typename choose<isConst, const T, T>::type*			pointer;
-	typedef typename choose<isConst, const T, T>::type&			reference;
+	typedef value_type*											pointer;
+	typedef value_type&											reference;
 	typedef random_access_iterator_tag							iterator_category;
-	typedef random_access_iterator<!isConst, T>					other_type;
+	// typedef random_access_iterator<!isConst, T>					other_type;
 
 	random_access_iterator() : ptr(NULL)	{}
 	random_access_iterator(T *ptr) : ptr(ptr)	{}
@@ -53,14 +53,6 @@ public:
 		return it;
 	}
 
-	bool	operator==(const random_access_iterator &rit) const	{
-		return ptr == rit;
-	}
-
-	bool	operator!=(const random_access_iterator &rit) const	{
-		return ptr != rit.ptr;
-	}
-
 	T	&operator*()	{
 		return *ptr;
 	}
@@ -84,6 +76,22 @@ public:
 		return random_access_iterator(ptr - n);
 	}
 
+	random_access_iterator	&operator+=(int n)	{
+		ptr += n;
+		return *this;
+	}
+	random_access_iterator	&operator-=(int n)	{
+		ptr -= n;
+		return *this;
+	}
+
+	T	&operator[](int n)	{
+		return ptr[n];
+	}
+	const T	&operator[](int n) const	{
+		return ptr[n];
+	}
+
 	friend
 	random_access_iterator	operator+(int n, random_access_iterator &rit)	{
 		return rit + n;
@@ -93,28 +101,29 @@ public:
 		return ptr - rit.ptr;
 	}
 
-	bool	operator<(const random_access_iterator &rit) const	{
-		return ptr < rit.ptr;	}
-	bool	operator<=(const random_access_iterator &rit) const	{
-		return ptr <= rit.ptr;	}
-	bool	operator>(const random_access_iterator &rit) const	{
-		return ptr > rit.ptr;	}
-	bool	operator>=(const random_access_iterator &rit) const	{
-		return ptr >= rit.ptr;	}
-
-	random_access_iterator	&operator+=(int n)	{
-		ptr += n;
+	friend
+	bool	operator==(const random_access_iterator &lhs, const random_access_iterator &rhs)	{
+		return lhs.ptr == rhs.ptr;
 	}
-	random_access_iterator	&operator-=(int n)	{
-		ptr -= n;
+	friend
+	bool	operator!=(const random_access_iterator &lhs, const random_access_iterator &rhs)	{
+		return lhs.ptr != rhs.ptr;
 	}
-
-	T	&operator[](int n)	{
-		return ptr[n];
+	friend
+	bool	operator<(const random_access_iterator &lhs, const random_access_iterator &rhs)	{
+		return lhs.ptr < rhs.ptr;
 	}
-
-	const T	&operator[](int n) const	{
-		return ptr[n];
+	friend
+	bool	operator<=(const random_access_iterator &lhs, const random_access_iterator &rhs)	{
+		return lhs.ptr <= rhs.ptr;
+	}
+	friend
+	bool	operator>(const random_access_iterator &lhs, const random_access_iterator &rhs)	{
+		return lhs.ptr > rhs.ptr;
+	}
+	friend
+	bool	operator>=(const random_access_iterator &lhs, const random_access_iterator &rhs)	{
+		return lhs.ptr >= rhs.ptr;
 	}
 
 	friend
