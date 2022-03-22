@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/21 05:07:40 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/22 12:14:55 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,12 @@ public:
 		_capacity = v._capacity;
 		A = v.A;
 		tab = A.allocate(v._capacity);
-		for (int i = 0; i < _size; i++)	{
+		for (size_type i = 0; i < _size; i++)	{
 			A.construct(&tab[i], v.tab[i]);
 		}
 	}
 	~vector()	{
-		for (int i = 0; i < _size; i++)	{
+		for (size_type i = 0; i < _size; i++)	{
 			A.destroy(&tab[i]);
 		}
 		A.deallocate(tab, _capacity);
@@ -86,7 +86,7 @@ public:
 		_size = v._size;
 		_capacity = v._capacity;
 		tab = A.allocate(v._capacity);
-		for (int i = 0; i < _size; i++)	{
+		for (size_type i = 0; i < _size; i++)	{
 			A.construct(&tab[i], v.tab[i]);
 		}
 	}
@@ -105,7 +105,7 @@ public:
 		return iterator(tab) + _size;
 	}
 	const_iterator end() const	{
-		return const_iterator(tab) + _size;
+		return (const_iterator(tab) + _size);
 	}
 
 	reverse_iterator rbegin() {
@@ -164,7 +164,7 @@ public:
 			new_capacity *= 2;
 		n = new_capacity;
 		value_type* new_tab = A.allocate(n);
-		for (int i = 0; i < _size; i++)	{
+		for (size_type i = 0; i < _size; i++)	{
 			A.construct(&new_tab[i], tab[i]);
 			A.destroy(&tab[i]);
 		}
@@ -266,7 +266,7 @@ public:
 		for (iterator it = end() + n - 1; it != position + n - 1; it--)
 		{
 			A.construct(it, *(it + 1));
-			A.destruct(it);
+			A.destroy(it);
 		}
 		for (;first != last; ++first)
 			A.construct(position++, *first);
@@ -274,10 +274,10 @@ public:
 	}
 
 	iterator erase (iterator position)	{
-		A.destruct(position);
+		A.destroy(position);
 		for (; position != end(); position++)	{
 			A.construct(position, *(position + 1));
-			A.destruct(position + 1);
+			A.destroy(position + 1);
 		}
 		_size--;
 		return position;
@@ -288,10 +288,10 @@ public:
 		difference_type i = std::distance(first, last);
 
 		for (; tmp != last; tmp++)
-			A.destruct(tmp);
+			A.destroy(tmp);
 		for (; tmp != end(); tmp++)	{
 			A.construct(first, *tmp);
-			A.destruct(tmp);
+			A.destroy(tmp);
 			first++;
 		}
 		_size -= i;
@@ -376,7 +376,7 @@ private:
 	void	copy_content(){}
 
 	void	destroy_content(int begin = 0)	{
-		for (int i = begin; i < _size; i++)
+		for (size_type i = begin; i < _size; i++)
 			A.destroy(&tab[i]);
 		_size = 0;
 	}
