@@ -16,7 +16,6 @@ public:
 	typedef value_type*											pointer;
 	typedef value_type&											reference;
 	typedef random_access_iterator_tag							iterator_category;
-	// typedef random_access_iterator<!isConst, T>					other_type;
 
 	random_access_iterator() : ptr(NULL)	{}
 	random_access_iterator(value_type *ptr) : ptr(ptr)	{}
@@ -24,7 +23,6 @@ public:
 	~random_access_iterator()	{}
 
 	operator random_access_iterator<true, T> () const {return (random_access_iterator<true, T>(this->ptr)); }
-	// random_access_iterator(typename enable_if<!isConst, random_access_iterator<false, T> >::type &rit) : ptr(rit.ptr)	{}
 
 	random_access_iterator	&operator=(const random_access_iterator	&rit)	{
 		ptr = rit.ptr;
