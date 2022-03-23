@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Stack.hpp                                          :+:      :+:    :+:   */
+/*   stack.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 23:46:38 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/16 16:50:44 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/23 23:52:32 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STACK_HPP
 # define STACK_HPP
 
-#include <vector> // a changer
+#include "vector.hpp"
 
 namespace ft {
 
-template <class T, class Container = std::vector<T> >
+template <class T, class Container = ft::vector<T> >
 class stack
 {
 public:
