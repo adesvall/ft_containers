@@ -30,16 +30,13 @@ public:
 	// 	return *this;
 	// }
 
-	value_type	&operator*()	{
+	reference	operator*() const	{
 		return *_it;
 	}
 
-	const value_type	&operator*() const	{
-		return *_it;
-	}
 
 	reverse_iterator	operator+(difference_type n) const	{
-		return reverse_iterator(_it - n);
+		return reverse_iterator(base() - n);
 	}
 
 	reverse_iterator	&operator++()	{
@@ -59,7 +56,7 @@ public:
 	}
 
 	reverse_iterator	operator-(difference_type n) const	{
-		return reverse_iterator(_it + n);
+		return reverse_iterator(base() + n);
 	}
 
 	reverse_iterator	&operator--()	{
@@ -78,19 +75,12 @@ public:
 		return *this;
 	}
 
-	value_type	*operator->()	{
-		return &(operator*());
-	}
-	const value_type	*operator->() const	{
+	pointer	operator->() const	{
 		return &(operator*());
 	}
 
-	value_type	&operator[](int n)	{
-		return _it[-n - 1];
-	}
-
-	const value_type	&operator[](int n) const	{
-		return _it[-n - 1];
+	reference	operator[](int n) const	{
+		return _it[-n];
 	}
 
 // NON MEMBERS FUNCTIONS

@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/23 17:09:48 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/23 23:39:28 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,17 +112,17 @@ public:
 	}
 
 	reverse_iterator rbegin() {
-		return reverse_iterator(tab);
+		return reverse_iterator(tab + _size);
 	}
 	const_reverse_iterator rbegin() const	{
-		return const_reverse_iterator(tab);
+		return const_reverse_iterator(tab + _size);
 	}
 
 	reverse_iterator rend() {
-		return reverse_iterator(tab + _size);
+		return reverse_iterator(tab);
 	}
 	const_reverse_iterator rend() const	{
-		return const_reverse_iterator(tab + _size);
+		return const_reverse_iterator(tab);
 	}
 
 // CAPACITY

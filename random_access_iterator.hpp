@@ -87,8 +87,9 @@ public:
 		return rit + n;
 	}
 
-	difference_type		operator-(const random_access_iterator &rit) const	{
-		return ptr - &(*rit);
+	friend
+	difference_type		operator-(const random_access_iterator &lhs, const random_access_iterator &rhs)	{
+		return &(*lhs) - &(*rhs);
 	}
 
 	friend
@@ -118,7 +119,7 @@ public:
 
 	friend
 	difference_type	distance(const random_access_iterator& first, const random_access_iterator& last)	{
-		return &(*last) - &(*first);
+		return last - first;
 	}
 
 private:
