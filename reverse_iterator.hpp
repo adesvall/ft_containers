@@ -16,13 +16,13 @@ public:
 	typedef typename iterator_traits<Iterator>::reference			reference;
 
 	reverse_iterator()	{}
-	explicit reverse_iterator(iterator_type ite) : _base(ite)	{}
+	explicit reverse_iterator(iterator_type ite) : _it(ite - 1)	{}
 	template <class Iter>
-	reverse_iterator(const reverse_iterator<Iter>& rev_it) : _base(rev_it.base())	{}
+	reverse_iterator(const reverse_iterator<Iter>& rev_it) : _it(rev_it.base() - 1)	{}
 	~reverse_iterator()	{}
-	
+
 	iterator_type base() const	{
-		return _base;
+		return _it + 1;
 	}
 
 	// reverse_iterator	&operator=(const reverse_iterator	&rit)	{
@@ -31,50 +31,50 @@ public:
 	// }
 
 	value_type	&operator*()	{
-		return *_base;
+		return *_it;
 	}
 
 	const value_type	&operator*() const	{
-		return *_base;
+		return *_it;
 	}
 
 	reverse_iterator	operator+(difference_type n) const	{
-		return reverse_iterator(_base - n);
+		return reverse_iterator(_it - n);
 	}
 
 	reverse_iterator	&operator++()	{
-		_base--;
+		_it--;
 		return *this;
 	}
 
 	reverse_iterator operator++(int)	{
 		reverse_iterator it(*this);
-		_base--;
+		_it--;
 		return it;
 	}
 
 	reverse_iterator	&operator+=(difference_type n)	{
-		_base -= n;
+		_it -= n;
 		return *this;
 	}
 
 	reverse_iterator	operator-(difference_type n) const	{
-		return reverse_iterator(_base + n);
+		return reverse_iterator(_it + n);
 	}
 
 	reverse_iterator	&operator--()	{
-		_base++;
+		_it++;
 		return *this;
 	}
 
 	reverse_iterator operator--(int)	{
 		reverse_iterator it(*this);
-		_base++;
+		_it++;
 		return it;
 	}
 
 	reverse_iterator	&operator-=(int n)	{
-		_base += n;
+		_it += n;
 		return *this;
 	}
 
@@ -86,11 +86,11 @@ public:
 	}
 
 	value_type	&operator[](int n)	{
-		return _base[-n - 1];
+		return _it[-n - 1];
 	}
 
 	const value_type	&operator[](int n) const	{
-		return _base[-n - 1];
+		return _it[-n - 1];
 	}
 
 // NON MEMBERS FUNCTIONS
@@ -102,7 +102,7 @@ public:
 
 
 private:
-	iterator_type _base;
+	iterator_type _it;
 };
 
 template <typename I_L, typename I_R>

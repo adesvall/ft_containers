@@ -11,7 +11,7 @@ template <bool isConst, class T>
 class	random_access_iterator
 {
 public:
-	typedef	size_t	difference_type;
+	typedef	long int	difference_type;
 	typedef typename choose<isConst, const T, T>::type			value_type;
 	typedef value_type*											pointer;
 	typedef value_type&											reference;
@@ -88,7 +88,7 @@ public:
 	}
 
 	difference_type		operator-(const random_access_iterator &rit) const	{
-		return ptr - rit.ptr;
+		return ptr - &(*rit);
 	}
 
 	friend

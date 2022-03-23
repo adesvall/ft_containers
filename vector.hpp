@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/22 16:59:31 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/23 17:09:48 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,12 +237,15 @@ public:
 	}
 
 	iterator insert (iterator position, const value_type& val)	{
+		difference_type i = ft::distance(begin(), position);
 		reserve(_size + 1);
-		reverse_iterator it;
-		for (it = rend(); it != reverse_iterator(position); it++)
+		position = begin() + i;
+		iterator it = end();
+		for (; it != position; it--)
 		{
-			A.construct(&(*it), *(it + 1));
-			A.destroy(&(*it));
+			A.construct(&(*it), *(it - 1));
+			// std::cout << *it;
+			A.destroy(&(*(it - 1)));
 		}
 		A.construct(&(*it), val);
 		_size++;
@@ -250,12 +253,14 @@ public:
 	}
 
     void insert (iterator position, size_type n, const value_type& val)	{
+		if (n == 0)
+			return ;
 		difference_type i = ft::distance(begin(), position);
 		reserve(_size + n);
 		position = begin() + i;
-		for (iterator it = end() + n - 1; it != position + n - 1; it--)
+		for (iterator it = end() - 1; it != position - 1; it--)
 		{
-			A.construct(&(*it), *(it + 1));
+			A.construct(&(*(it + n)), *it);
 			A.destroy(&(*it));
 		}
 		for (size_type i = 0; i < n; i++)	{
@@ -272,9 +277,9 @@ public:
 		difference_type i = distance(begin(), position);
 		reserve(_size + n);
 		position = begin() + i;
-		for (iterator it = end() + n - 1; it != position + n - 1; it--)
+		for (iterator it = end() - 1; it != position - 1; it--)
 		{
-			A.construct(&(*it), *(it + 1));
+			A.construct(&(*(it + n)), *it);
 			A.destroy(&(*it));
 		}
 		for (;first != last; ++first)
@@ -283,13 +288,15 @@ public:
 	}
 
 	iterator erase (iterator position)	{
+		iterator ret = position;
 		A.destroy(&(*position));
-		for (; position != end(); position++)	{
+		iterator end = this->end() - 1;
+		for (; position != end; position++)	{
 			A.construct(&(*position), *(position + 1));
 			A.destroy(&(*(position + 1)));
 		}
 		_size--;
-		return position;
+		return ret;
 	}
 	iterator erase (iterator first, iterator last)	{
 		iterator ret = first;
@@ -341,11 +348,13 @@ public:
 	
 	friend
 	bool operator<  (const vector& lhs, const vector& rhs)	{
-		if (lhs._size != rhs._size)
-			return lhs._size < rhs._size;
 		for (size_type i = 0; i < rhs._size; i++)
+		{
+			if (i == lhs._size)
+				return true;
 			if (lhs.tab[i] != rhs.tab[i])
 				return lhs.tab[i] < rhs.tab[i];
+		}
 		return false;
 	}
 
@@ -380,7 +389,7 @@ private:
 	void	destroy_content(int begin = 0)	{
 		for (size_type i = begin; i < _size; i++)
 			A.destroy(&tab[i]);
-		_size = 0;
+		_size = begin;
 	}
 
 	template <typename T2>
