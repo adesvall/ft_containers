@@ -34,7 +34,11 @@ public:
 	typedef size_t	size_type;
 
 	explicit map (const key_compare& comp = key_compare(),
-              const allocator_type& alloc = allocator_type());
+              const allocator_type& alloc = allocator_type())
+	_size(0), comp(comp), A(alloc), root(NULL)
+	{
+		
+	}
 			  
 	template <class InputIterator>
 	map (InputIterator first, InputIterator last,

@@ -34,7 +34,7 @@ public:
 
 	map_iterator	&operator++()	{
 		if (node->more != LEAF)
-			node = node->more;
+			node = node->more->min_node();
 			return *this;
 		while (node->parent() && node == node->parent()->more)
 			node = node->parent();
@@ -54,7 +54,7 @@ public:
 		if (node == NULL)
 			; // ????
 		if (node->less != LEAF)
-			node = node->less;
+			node = node->less->max_node();
 			return *this;
 		while (node->parent() && node == node->parent()->less)
 			node = node->parent();
