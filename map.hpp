@@ -4,6 +4,7 @@
 # include <memory>
 # include "RB_node.hpp"
 # include "pair.hpp"
+# include "map_iterator.hpp"
 
 namespace	ft
 {
@@ -25,10 +26,10 @@ public:
 	typedef typename allocator_type::const_reference	const_reference;
 	typedef typename allocator_type::pointer			pointer;
 	typedef typename allocator_type::const_pointer		const_pointer;
-	typedef 			iterator;
-	typedef				const_iterator;
-	typedef ft::reverse_iterator<iterator>					reverse_iterator;
-	typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+	typedef map_iterator<false, value_type>				iterator;
+	typedef	map_iterator<true, value_type>				const_iterator;
+	typedef ft::reverse_iterator<iterator>				reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 	typedef typename iterator_traits<iterator>::difference_type	difference_type;
 	typedef size_t	size_type;
 
@@ -46,10 +47,12 @@ public:
 	map& operator= (const map& x);
 
 private:
+	typedef	RB_node<key_type, value_type>	tree_node;
+
 	size_type		_size;
 	key_compare		comp;
 	allocator_type	A;
-	RB_node			*root;
+	tree_node		*root;
 	// RB_node			leaf;
 };
 
