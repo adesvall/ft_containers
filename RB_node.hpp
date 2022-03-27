@@ -24,15 +24,15 @@ struct RB_node
 	RB_node			*more;
 	RB_node 		*parent;
 
-	RB_node(value_type	&val) : value(val), color(RED), less(LEAF), more(LEAF), parent(NULL)	{}
+	RB_node(const value_type	&val) : value(val), color(RED), less(LEAF), more(LEAF), parent(NULL)	{}
 	~RB_node();
 
-	RB_node	*grandparent() const	{
+	RB_node	*grandparent()	{
 		if (parent == NULL)
 			return NULL;
 		return parent->parent;
 	}
-	RB_node	*frere() const	{
+	RB_node	*frere()	{
 		if (parent == NULL)
 			return NULL;
 		if (this == parent->less)
@@ -40,24 +40,24 @@ struct RB_node
 		else
 			return parent->less;
 	}
-	RB_node	*oncle() const {
+	RB_node	*oncle() {
 		RB_node	*g = grandparent();
 		if (g == NULL)
 			return NULL;
 		return parent->frere();
 	}
 	
-	RB_node	*max_node()	const {
+	RB_node	*max_node() {
 		if (more != LEAF)
 			return more->max_node();
 		return this;
 	}
-	RB_node	*min_node()	const {
+	RB_node	*min_node() {
 		if (less != LEAF)
 			return less->min_node();
 		return this;
 	}
-	RB_node	*root()	const {
+	RB_node	*root()	{
 		if (parent == NULL)
 			return this;
 		return parent->root();

@@ -31,7 +31,7 @@ public:
 	}
 
 	void delete_node(node_type *z) {
-		node_type *x, y;
+		node_type *x, *y;
 
 		y = z;
 		int y_original_color = y->color;
@@ -58,15 +58,15 @@ public:
 			y->color = z->color;
 		}
 		delete z;
-		if (y_original_color == 0) {
+		if (y_original_color == BLACK) {
 			delete_fix_tree(x);
 		}
 	}
 
-	node_type	*max_node()	{
+	node_type	*max_node()	const {
 		return root->max_node();
 	}
-	node_type	*min_node()	{
+	node_type	*min_node()	const {
 		return root->min_node();
 	}
 
@@ -123,92 +123,91 @@ private:
 			
 			node_type *g = x->grandparent();
 			g->color = RED;
-			insertion_fix_tree(g);
+			insert_fix_tree(g);
 		}
 		else	{
 			node_type *g = x->grandparent();
-			node_type *n;
 
-			if (this == g->gauche->droit) {
+			if (g->less != LEAF && x == g->less->more) {
 				rotate_left(x->parent);
-				n = n->gauche;
+				x = x->less;
 			}
-			else if (this == g->droit->gauche) {
+			else if (g->more != LEAF && x == g->more->less) {
 				rotate_right(x->parent);
-				n = n->droit; 
+				x = x->more; 
 			}
 
-			node_type *p = n->parent;
-			*g = n->grandparent();
+			node_type *p = x->parent;
+			node_type *gr = x->grandparent();
 
-			if (n == p->gauche)
-				rotate_right(g);
+			if (x == p->less)
+				rotate_right(gr);
 			else
-				rotate_left(g);
+				rotate_left(gr);
 			
 			p->color = BLACK;
-			g->color = RED;
+			gr->color = RED;
 		}
 	}
 
 	void delete_fix_tree(node_type *x) {
 		node_type *s;
-		while (x->parent != NULL && x->color == 0) { // color
-			if (x == x->parent->left) {
-				s = x->parent->right;
-				if (s->color == 1) {
-					s->color = 0;
-					x->parent->color = 1;
-					rotate_left(x->parent->rotate);
-					s = x->parent->right;
+		while (x->parent != NULL && x->color == BLACK) { // color
+			if (x == x->parent->less) {
+				s = x->parent->more;
+				if (s->color == RED) {
+					s->color = BLACK;
+					x->parent->color = RED;
+					rotate_left(x->parent);
+					s = x->parent->more;
 				}
 
-				if (s->left->color == 0 && s->right->color == 0) {
-					s->color = 1;
+				if (s->less->color == BLACK && s->more->color == BLACK) {
+					s->color = RED;
 					x = x->parent;
 				} else {
-					if (s->right->color == 0) {
-						s->left->color = 0;
-						s->color = 1;
+					if (s->more->color == BLACK) {
+						s->less->color = BLACK;
+						s->color = RED;
 						rotate_right(s);
-						s = x->parent->right;
+						s = x->parent->more;
 					}
 
 					s->color = x->parent->color;
-					x->parent->color = 0;
-					s->right->color = 0;
+					x->parent->color = BLACK;
+					s->more->color = BLACK;
 					rotate_left(x->parent);
 					x = root;
 				}
 			} else {
-				s = x->parent->left;
-				if (s->color == 1) {
-					s->color = 0;
-					x->parent->color = 1;
+				s = x->parent->less;
+				if (s->color == RED) {
+					s->color = BLACK;
+					x->parent->color = RED;
 					rotate_right(x->parent);
-					s = x->parent->left;
+					s = x->parent->less;
 				}
 
-				if (s->right->color == 0 && s->right->color == 0) {
-					s->color = 1;
+				if (s->more->color == BLACK && s->more->color == BLACK) {
+					s->color = RED;
 					x = x->parent;
 				} else {
-					if (s->left->color == 0) {
-						s->right->color = 0;
-						s->color = 1;
+					if (s->less->color == BLACK) {
+						s->more->color = BLACK;
+						s->color = RED;
 						rotate_left(s);
-						s = x->parent->left;
+						s = x->parent->less;
 					}
 
 					s->color = x->parent->color;
-					x->parent->color = 0;
-					s->left->color = 0;
+					x->parent->color = BLACK;
+					s->less->color = BLACK;
 					rotate_right(x->parent);
 					x = root;
 				}
 			}
 		}
-		x->color = 0;
+		x->color = BLACK;
 	}
 
 };

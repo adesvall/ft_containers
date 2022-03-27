@@ -21,7 +21,7 @@ public:
 	typedef bidirectional_iterator_tag							iterator_category;
 
 	map_iterator() : _node(NULL)	{}
-	map_iterator(tree_node *node) : _node(node)	{}
+	map_iterator(const tree_node *node) : _node(node)	{}
 	map_iterator(const map_iterator &rit) : _node(rit._node)	{}
 	~map_iterator()	{}
 
@@ -37,11 +37,11 @@ public:
 			_node = _node->more->min_node();
 			return *this;
 		}
-		while (_node->parent() && _node == _node->parent()->more)
-			_node = _node->parent();
-		if (_node->parent() == NULL)
+		while (_node->parent && _node == _node->parent->more)
+			_node = _node->parent;
+		if (_node->parent == NULL)
 			_node = LEAF;
-		_node = _node->parent();
+		_node = _node->parent;
 		return *this;
 	}
 
@@ -60,11 +60,11 @@ public:
 			_node = _node->less->max_node();
 			return *this;
 		}
-		while (_node->parent() && _node == _node->parent()->less)
-			_node = _node->parent();
-		if (_node->parent() == NULL)
+		while (_node->parent && _node == _node->parent->less)
+			_node = _node->parent;
+		if (_node->parent == NULL)
 			_node = LEAF;
-		_node = _node->parent();
+		_node = _node->parent;
 		return *this;
 	}
 

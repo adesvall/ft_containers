@@ -18,9 +18,10 @@ template < class Key,                                     // map::key_type
 class map
 {
 public:
+
 	typedef Key											key_type;
 	typedef T											mapped_type;
-	typedef pair<const key_type, mapped_type>			value_type;
+	typedef ft::pair<const key_type, mapped_type>		value_type;
 	typedef Compare										key_compare;
 	typedef Alloc										allocator_type;
 	typedef typename allocator_type::reference			reference;
@@ -33,20 +34,41 @@ public:
 	typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 	typedef typename iterator_traits<iterator>::difference_type	difference_type;
 	typedef size_t	size_type;
+	class value_compare
+	{
+		friend class map;
+	protected:
+		key_compare comp;
+		value_compare (key_compare c) : comp(c) {}
+	public:
+		typedef bool result_type;
+		typedef value_type first_argument_type;
+		typedef value_type second_argument_type;
+		bool operator() (const value_type& x, const value_type& y) const
+		{
+			return comp(x.first, y.first);
+		}
+	};
+
 
 	explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
-	: _size(0), A(alloc), comp(comp), tree()
+	: _size(0), tree(), A(alloc), comp(comp)
 	{}
 			  
 	template <class InputIterator>
 	map(InputIterator first, InputIterator last,
 		const key_compare& comp = key_compare(),
 		const allocator_type& alloc = allocator_type())
-	:_size(0), A(alloc), comp(comp), tree()
+	:_size(0), tree(), A(alloc), comp(comp)
 	{
+		insert(first, last);
 	}
 		
-	map(const map& x)	{}
+	map(const map& x)	
+	:_size(0), tree(), A(x.alloc), comp(x.comp)
+	{
+		insert(x.begin(), x.end());
+	}
 	virtual ~map()	{
 		clear();
 	}
@@ -64,7 +86,7 @@ public:
 		return iterator(LEAF);
 	}
 	const_iterator end() const	{
-		return iterator(LEAF);
+		return iterator((void*)LEAF);
 	}
 	iterator rbegin()	{
 		return reverse_iterator(LEAF);
@@ -103,14 +125,14 @@ public:
 
 // MODIFIERS
 	pair<iterator,bool> insert (const value_type& val)	{
-		node_type **dst = tree.root;
+		node_type **dst = &tree.root;
 		node_type *parent = NULL;
 
 		while (*dst != LEAF)	{
 			parent = *dst;
-			if (comp(n->value.first , (*dst)->value))
+			if (comp(val.first, (*dst)->value.first))
 				dst = &(*dst)->less;
-			else if (comp((*dst)->value, n->value.first))
+			else if (comp((*dst)->value.first, val.first))
 				dst = &(*dst)->more;
 			else
 				return make_pair(iterator(*dst), false);
@@ -137,7 +159,7 @@ public:
 		tree.delete_node(del);
 		A.destroy(del);
 		A.deallocate(del, 1);
-		size--;
+		_size--;
 	}
 	size_type erase (const key_type& k)	{
 		node_type *node = tree.get_node(k);
@@ -206,12 +228,12 @@ public:
 	const_iterator lower_bound(const key_type& k) const	{
 		pair<node_type*, node_type*> res = get_node_parent(k);
 		if (res.first != LEAF)
-			return iterator(res.first);
+			return const_iterator(res.first);
 		if (res.second == NULL)
 			return end();
 		if (!comp(res.second->value.first, k))
-			return iterator(res.second);
-		return ++iterator(res.second);
+			return const_iterator(res.second);
+		return ++const_iterator(res.second);
 	}
 
 	iterator upper_bound (const key_type& k)	{
@@ -260,7 +282,7 @@ private:
 		return (n);
 	}
 
-	pair<node_type*, node_type*>	get_node_parent(key_type& key)	{
+	pair<node_type*, node_type*>	get_node_parent(const key_type& key) const	{
 		node_type	*n = tree.root;
 		node_type	*parent = NULL;
 	
@@ -277,22 +299,6 @@ private:
 				return make_pair(n, parent);
 		}
 		return (make_pair(n, parent));
-	}
-
-	class value_compare
-	{
-		friend class map;
-	protected:
-		key_compare comp;
-		value_compare (key_compare c) : comp(c) {}
-	public:
-		typedef bool result_type;
-		typedef value_type first_argument_type;
-		typedef value_type second_argument_type;
-		bool operator() (const value_type& x, const value_type& y) const
-		{
-			return comp(x.first, y.first);
-		}
 	}
 
 };
