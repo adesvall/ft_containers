@@ -20,27 +20,28 @@ public:
 	typedef value_type&											reference;
 	typedef bidirectional_iterator_tag							iterator_category;
 
-	map_iterator() : node(NULL)	{}
-	map_iterator(tree_node *node) : node(node)	{}
-	map_iterator(const map_iterator &rit) : node(rit.node)	{}
+	map_iterator() : _node(NULL)	{}
+	map_iterator(tree_node *node) : _node(node)	{}
+	map_iterator(const map_iterator &rit) : _node(rit._node)	{}
 	~map_iterator()	{}
 
-	operator map_iterator<true, T> () const {return (map_iterator<true, T>(this->node)); }
+	operator map_iterator<true, T> () const {return (map_iterator<true, T>(this->_node)); }
 
 	map_iterator	&operator=(const map_iterator	&rit)	{
-		node = rit.node;
+		_node = rit._node;
 		return *this;
 	}
 
 	map_iterator	&operator++()	{
-		if (node->more != LEAF)
-			node = node->more->min_node();
+		if (_node->more != LEAF)	{
+			_node = _node->more->min_node();
 			return *this;
-		while (node->parent() && node == node->parent()->more)
-			node = node->parent();
-		if (node->parent() == NULL)
-			node = LEAF;
-		node = node->parent();
+		}
+		while (_node->parent() && _node == _node->parent()->more)
+			_node = _node->parent();
+		if (_node->parent() == NULL)
+			_node = LEAF;
+		_node = _node->parent();
 		return *this;
 	}
 
@@ -51,16 +52,19 @@ public:
 	}
 
 	map_iterator	&operator--()	{
-		if (node == LEAF)
-			; // ????
-		if (node->less != LEAF)
-			node = node->less->max_node();
+		if (_node == LEAF)	{
+			_node = _node->less->max_node();
 			return *this;
-		while (node->parent() && node == node->parent()->less)
-			node = node->parent();
-		if (node->parent() == NULL)
-			node = LEAF;
-		node = node->parent();
+		}
+		if (_node->less != LEAF)	{
+			_node = _node->less->max_node();
+			return *this;
+		}
+		while (_node->parent() && _node == _node->parent()->less)
+			_node = _node->parent();
+		if (_node->parent() == NULL)
+			_node = LEAF;
+		_node = _node->parent();
 		return *this;
 	}
 
@@ -71,30 +75,28 @@ public:
 	}
 
 	reference	operator*() const	{
-		return node->value;
+		return _node->value;
 	}
 
 	pointer		operator->() const	{
-		return &node->value;
+		return &_node->value;
 	}
 
 	friend
 	bool	operator==(const map_iterator &lhs, const map_iterator &rhs)	{
-		return lhs.node == rhs.node;
+		return lhs._node == rhs._node;
 	}
 	friend
 	bool	operator!=(const map_iterator &lhs, const map_iterator &rhs)	{
-		return lhs.node != rhs.node;
+		return lhs._node != rhs._node;
 	}
 
 	tree_node	*node()	const	{
-		return node;
+		return _node;
 	}
 
-	
-
 private:
-	tree_node	*node;
+	tree_node	*_node;
 };
 
 }

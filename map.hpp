@@ -5,6 +5,7 @@
 # include "utils.hpp"
 # include "RB_tree.hpp"
 # include "map_iterator.hpp"
+# include "reverse_iterator.hpp"
 
 namespace	ft
 {
@@ -33,29 +34,31 @@ public:
 	typedef typename iterator_traits<iterator>::difference_type	difference_type;
 	typedef size_t	size_type;
 
-	explicit map (const key_compare& comp = key_compare(),
-              const allocator_type& alloc = allocator_type())
-	_size(0), A(alloc), comp(comp), tree(comp)
-	{
-		
-	}
+	explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+	: _size(0), A(alloc), comp(comp), tree()
+	{}
 			  
 	template <class InputIterator>
 	map(InputIterator first, InputIterator last,
 		const key_compare& comp = key_compare(),
-		const allocator_type& alloc = allocator_type());
+		const allocator_type& alloc = allocator_type())
+	:_size(0), A(alloc), comp(comp), tree()
+	{
+	}
 		
-	map(const map& x);
-	virtual ~map();
+	map(const map& x)	{}
+	virtual ~map()	{
+		clear();
+	}
 
 	map& operator=(const map& x);
 
 // ITERATORS
 	iterator begin()	{
-		return iterator(root->min_value());
+		return iterator(tree.min_node());
 	}
 	const_iterator begin() const	{
-		return const_iterator(root->min_value());
+		return const_iterator(tree.min_node());
 	}
 	iterator end()	{
 		return iterator(LEAF);
@@ -70,10 +73,10 @@ public:
 		return const_reverse_iterator(LEAF);
 	}
 	iterator rend()	{
-		return reverse_iterator(root->min_value());
+		return reverse_iterator(tree.min_node());
 	}
 	const_iterator rend() const	{
-		return const_reverse_iterator(root->min_value());
+		return const_reverse_iterator(tree.min_node());
 	}
 
 // CAPACITY
@@ -100,7 +103,7 @@ public:
 
 // MODIFIERS
 	pair<iterator,bool> insert (const value_type& val)	{
-		node_type **dst = root;
+		node_type **dst = tree.root;
 		node_type *parent = NULL;
 
 		while (*dst != LEAF)	{
@@ -227,15 +230,15 @@ public:
 	}
 
 	pair<const_iterator,const_iterator> equal_range (const key_type& k) const	{
-		return make_pair(lower_bound(), upper_bound());
+		return make_pair(lower_bound(k), upper_bound(k));
 	}
 	pair<iterator,iterator>             equal_range (const key_type& k)	{
-		return make_pair(lower_bound(), upper_bound());
+		return make_pair(lower_bound(k), upper_bound(k));
 	}
 
 private:
 	typedef	RB_node<value_type>	node_type;
-	typedef	RB_tree<key_type, mapped_type>	rb_tree;
+	typedef	RB_tree<value_type>	rb_tree;
 
 	size_type		_size;
 	rb_tree			tree;
@@ -244,7 +247,7 @@ private:
 	// RB_node			leaf;
 
 	node_type *get_node(key_type& key)	{
-		node_type	*n = root;
+		node_type	*n = tree.root;
 
 		while (n != LEAF)	{
 			if (comp(n->value.first, key))
@@ -258,7 +261,7 @@ private:
 	}
 
 	pair<node_type*, node_type*>	get_node_parent(key_type& key)	{
-		node_type	*n = root;
+		node_type	*n = tree.root;
 		node_type	*parent = NULL;
 	
 		while (n != LEAF)	{
