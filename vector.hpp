@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/23 23:39:28 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/27 19:09:55 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -390,15 +390,6 @@ private:
 		for (size_type i = begin; i < _size; i++)
 			A.destroy(&tab[i]);
 		_size = begin;
-	}
-
-	template <typename T2>
-	void	swap(T2& a, T2& b)	{
-		T2 tmp;
-
-		tmp = a;
-		a = b;
-		b = tmp;
 	}
 };
 

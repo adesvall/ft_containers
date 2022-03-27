@@ -4,6 +4,15 @@
 namespace ft
 {
 
+template <typename T>
+void	swap(T& a, T& b)	{
+	T tmp;
+
+	tmp = a;
+	a = b;
+	b = tmp;
+}
+
 template <bool, class IsTrue = void>
 struct enable_if;
 

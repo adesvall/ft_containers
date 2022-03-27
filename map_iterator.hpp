@@ -51,7 +51,7 @@ public:
 	}
 
 	map_iterator	&operator--()	{
-		if (node == NULL)
+		if (node == LEAF)
 			; // ????
 		if (node->less != LEAF)
 			node = node->less->max_node();
@@ -86,6 +86,12 @@ public:
 	bool	operator!=(const map_iterator &lhs, const map_iterator &rhs)	{
 		return lhs.node != rhs.node;
 	}
+
+	tree_node	*node()	const	{
+		return node;
+	}
+
+	
 
 private:
 	tree_node	*node;
