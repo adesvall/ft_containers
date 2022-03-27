@@ -77,15 +77,15 @@ public:
 		node_type **dst = root;
 		node_type *parent = NULL;
 
-		while (*dst != LEAF && (*dst)->value.first != n->value.first)	{
+		while (*dst != LEAF)	{
 			parent = *dst;
 			if (comp(n->value.first , (*dst)->value))
 				dst = &(*dst)->less;
-			else
+			else if (comp((*dst)->value, n->value.first))
 				dst = &(*dst)->more;
+			else
+				return make_pair(iterator(*dst), false);
 		}
-		if (*dst != LEAF)
-			return make_pair(iterator(*dst), false);
 		node_type *new_node = A.allocate(1);
 		A.construct(new_node, node_type(val));
 		tree.insert(parent, *dst, new_node);
@@ -162,11 +162,13 @@ private:
 	node_type *get_node(key_type& key)	{
 		node_type	*n = root;
 
-		while (n != LEAF && n->value.first != key)	{
+		while (n != LEAF)	{
 			if (comp(n->value.first, key))
 				n = n->more;
-			else
+			else if (comp(key, n->value.first))
 				n = n->less;
+			else
+				return n;
 		}
 		return (n);
 	}

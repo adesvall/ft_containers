@@ -6,7 +6,7 @@
 namespace	ft
 {
 
-template <T>
+template <typename T>
 class RB_tree
 {
 private:
