@@ -16,19 +16,15 @@ public:
 	typedef typename iterator_traits<Iterator>::reference			reference;
 
 	reverse_iterator()	{}
-	explicit reverse_iterator(iterator_type ite) : _it(ite - 1)	{}
+	explicit reverse_iterator(iterator_type ite) : _it(--ite)	{}
 	template <class Iter>
-	reverse_iterator(const reverse_iterator<Iter>& rev_it) : _it(rev_it.base() - 1)	{}
+	reverse_iterator(const reverse_iterator<Iter>& rev_it) : _it(--rev_it.base())	{}
 	~reverse_iterator()	{}
 
 	iterator_type base() const	{
-		return _it + 1;
+		iterator_type it = _it;
+		return ++it;
 	}
-
-	// reverse_iterator	&operator=(const reverse_iterator	&rit)	{
-	// 	ptr = rit.ptr;
-	// 	return *this;
-	// }
 
 	reference	operator*() const	{
 		return *_it;

@@ -50,6 +50,32 @@ public:
 
 	map& operator=(const map& x);
 
+// ITERATORS
+	iterator begin()	{
+		return iterator(root->min_value());
+	}
+	const_iterator begin() const	{
+		return const_iterator(root->min_value());
+	}
+	iterator end()	{
+		return iterator(LEAF);
+	}
+	const_iterator end() const	{
+		return iterator(LEAF);
+	}
+	iterator rbegin()	{
+		return reverse_iterator(LEAF);
+	}
+	const_iterator rbegin() const	{
+		return const_reverse_iterator(LEAF);
+	}
+	iterator rend()	{
+		return reverse_iterator(root->min_value());
+	}
+	const_iterator rend() const	{
+		return const_reverse_iterator(root->min_value());
+	}
+
 // CAPACITY
 	bool empty() const	{
 		return _size == 0;
@@ -141,12 +167,70 @@ public:
 		return comp;
 	}
 
-	value_compare	value_comp() const{
+	value_compare	value_comp() const	{
 		return value_compare(comp);
 	}
 
 	allocator_type	get_allocator() const	{
 		return A;
+	}
+
+// OPERATIONS
+	iterator find (const key_type& k)	{
+		node_type	*node = get_node(k);
+		if (node == LEAF)
+			return end();
+		return iterator(node);
+	}
+	const_iterator find (const key_type& k) const	{
+		node_type	*node = get_node(k);
+		if (node == LEAF)
+			return end();
+		return const_iterator(node);
+	}
+	
+	size_type count (const key_type& k) const	{
+		node_type	*node = get_node(k);
+		if (node == LEAF)
+			return 0;
+		return 1;
+	}
+
+	iterator 	lower_bound(const key_type& k)	{
+		const_iterator it = lower_bound(k);
+		return iterator(it.node());
+	}
+	const_iterator lower_bound(const key_type& k) const	{
+		pair<node_type*, node_type*> res = get_node_parent(k);
+		if (res.first != LEAF)
+			return iterator(res.first);
+		if (res.second == NULL)
+			return end();
+		if (!comp(res.second->value.first, k))
+			return iterator(res.second);
+		return ++iterator(res.second);
+	}
+
+	iterator upper_bound (const key_type& k)	{
+		const_iterator it = upper_bound(k);
+		return iterator(it.node());
+	}
+	const_iterator upper_bound (const key_type& k) const	{
+		pair<node_type*, node_type*> res = get_node_parent(k);
+		if (res.first != LEAF)
+			return iterator(res.first);
+		if (res.second == NULL)
+			return end();
+		if (comp(k, res.second->value.first))
+			return iterator(res.second);
+		return --iterator(res.second);
+	}
+
+	pair<const_iterator,const_iterator> equal_range (const key_type& k) const	{
+		return make_pair(lower_bound(), upper_bound());
+	}
+	pair<iterator,iterator>             equal_range (const key_type& k)	{
+		return make_pair(lower_bound(), upper_bound());
 	}
 
 private:
@@ -171,6 +255,25 @@ private:
 				return n;
 		}
 		return (n);
+	}
+
+	pair<node_type*, node_type*>	get_node_parent(key_type& key)	{
+		node_type	*n = root;
+		node_type	*parent = NULL;
+	
+		while (n != LEAF)	{
+			if (comp(n->value.first, key))	{
+				parent = n;
+				n = n->more;
+			}
+			else if (comp(key, n->value.first))	{
+				parent = n;
+				n = n->less;
+			}
+			else
+				return make_pair(n, parent);
+		}
+		return (make_pair(n, parent));
 	}
 
 	class value_compare
