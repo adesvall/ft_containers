@@ -25,7 +25,9 @@ struct RB_node
 	RB_node 		*parent;
 
 	RB_node(const value_type	&val) : value(val), color(RED), less(LEAF), more(LEAF), parent(NULL)	{}
-	~RB_node();
+	~RB_node()	{}
+
+	//operator RB_node<const T> ()	{return RB_node<const T>()}
 
 	RB_node	*grandparent()	{
 		if (parent == NULL)

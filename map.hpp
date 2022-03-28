@@ -86,7 +86,7 @@ public:
 		return iterator(LEAF);
 	}
 	const_iterator end() const	{
-		return iterator((void*)LEAF);
+		return iterator(LEAF);
 	}
 	iterator rbegin()	{
 		return reverse_iterator(LEAF);
@@ -222,8 +222,14 @@ public:
 	}
 
 	iterator 	lower_bound(const key_type& k)	{
-		const_iterator it = lower_bound(k);
-		return iterator(it.node());
+		pair<node_type*, node_type*> res = get_node_parent(k);
+		if (res.first != LEAF)
+			return iterator(res.first);
+		if (res.second == NULL)
+			return end();
+		if (!comp(res.second->value.first, k))
+			return iterator(res.second);
+		return ++iterator(res.second);
 	}
 	const_iterator lower_bound(const key_type& k) const	{
 		pair<node_type*, node_type*> res = get_node_parent(k);
@@ -237,10 +243,6 @@ public:
 	}
 
 	iterator upper_bound (const key_type& k)	{
-		const_iterator it = upper_bound(k);
-		return iterator(it.node());
-	}
-	const_iterator upper_bound (const key_type& k) const	{
 		pair<node_type*, node_type*> res = get_node_parent(k);
 		if (res.first != LEAF)
 			return iterator(res.first);
@@ -249,6 +251,16 @@ public:
 		if (comp(k, res.second->value.first))
 			return iterator(res.second);
 		return --iterator(res.second);
+	}
+	const_iterator upper_bound (const key_type& k) const	{
+		pair<node_type*, node_type*> res = get_node_parent(k);
+		if (res.first != LEAF)
+			return const_iterator(res.first);
+		if (res.second == NULL)
+			return end();
+		if (comp(k, res.second->value.first))
+			return const_iterator(res.second);
+		return --const_iterator(res.second);
 	}
 
 	pair<const_iterator,const_iterator> equal_range (const key_type& k) const	{

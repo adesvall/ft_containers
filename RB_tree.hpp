@@ -117,7 +117,7 @@ private:
 			x->color = BLACK;
 		else if (x->parent->color == BLACK) // on laisse n rouge et c'est bon
 			return ;
-		else if (x->oncle()->color == RED)	{
+		else if (x->oncle() != LEAF && x->oncle()->color == RED)	{
 			x->parent->color = BLACK;
 			x->oncle()->color = BLACK;
 			

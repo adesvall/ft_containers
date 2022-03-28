@@ -15,13 +15,13 @@ class	map_iterator
 public:
 	typedef	long int	difference_type;
 	typedef typename choose<isConst, const T, T>::type			value_type;
-	typedef	RB_node<value_type>									tree_node;
+	typedef	RB_node<value_type>									node_type;
 	typedef value_type*											pointer;
 	typedef value_type&											reference;
 	typedef bidirectional_iterator_tag							iterator_category;
 
 	map_iterator() : _node(NULL)	{}
-	map_iterator(const tree_node *node) : _node(node)	{}
+	map_iterator(void *node) : _node(static_cast<node_type*>(node))	{}
 	map_iterator(const map_iterator &rit) : _node(rit._node)	{}
 	~map_iterator()	{}
 
@@ -91,12 +91,12 @@ public:
 		return lhs._node != rhs._node;
 	}
 
-	tree_node	*node()	const	{
+	node_type	*node()	const	{
 		return _node;
 	}
 
 private:
-	tree_node	*_node;
+	node_type	*_node;
 };
 
 }
