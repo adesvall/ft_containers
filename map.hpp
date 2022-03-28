@@ -65,7 +65,7 @@ public:
 	}
 		
 	map(const map& x)	
-	:_size(0), tree(), A(x.alloc), comp(x.comp)
+	:_size(0), tree(), A(x.A), comp(x.comp)
 	{
 		insert(x.begin(), x.end());
 	}
@@ -73,7 +73,14 @@ public:
 		clear();
 	}
 
-	map& operator=(const map& x);
+	map& operator=(const map& x)	{
+		clear();
+		_size = 0;
+		A = x.A;
+		comp = x.comp;
+		insert(x.begin(), x.end());
+		return *this;
+	}
 
 // ITERATORS
 	iterator begin()	{
