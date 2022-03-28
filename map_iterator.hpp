@@ -33,6 +33,9 @@ public:
 	}
 
 	map_iterator	&operator++()	{
+		if (_node == LEAF)	{
+			return *this;
+		}
 		if (_node->more != LEAF)	{
 			_node = _node->more->min_node();
 			return *this;
@@ -41,7 +44,8 @@ public:
 			_node = _node->parent;
 		if (_node->parent == NULL)
 			_node = LEAF;
-		_node = _node->parent;
+		else
+			_node = _node->parent;
 		return *this;
 	}
 
@@ -53,7 +57,6 @@ public:
 
 	map_iterator	&operator--()	{
 		if (_node == LEAF)	{
-			_node = _node->less->max_node();
 			return *this;
 		}
 		if (_node->less != LEAF)	{

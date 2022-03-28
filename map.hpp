@@ -7,6 +7,8 @@
 # include "map_iterator.hpp"
 # include "reverse_iterator.hpp"
 
+# include <iostream>
+
 namespace	ft
 {
 
@@ -34,6 +36,8 @@ public:
 	typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 	typedef typename iterator_traits<iterator>::difference_type	difference_type;
 	typedef size_t	size_type;
+	typedef	RB_node<value_type>	node_type;
+	typedef	RB_tree<value_type>	rb_tree;
 	class value_compare
 	{
 		friend class map;
@@ -82,6 +86,29 @@ public:
 		return *this;
 	}
 
+	void printMap(void) // A SUPPRIMER
+	{
+		node_type * r = tree.root;
+		if (r == LEAF)
+			std::cout << "RIEN DANS LARBRE !\n";
+		std::cout << "HEAD: " << r->value.first << " - n:" << r << " - p:" << r->parent << " - l:" << r->less << " - r:" << r->more << "\n"; // 6
+		print2D(r, 1);
+	}
+
+	void print2D(node_type *r, int space)	{
+		if (r == LEAF) // Base case  1
+			return;
+		space += 2; // Increase distance between levels   2
+		print2D(r->more, space); // Process right child first 3 
+		std::cout << std::endl;
+		for (int i = 1; i < space; i++) // 5 
+		{
+			std::cout << "    "; // 5.1
+		}
+		std::cout << r->value.first << " - col:" << r->color  << " - n:" << r << " - p:" << r->parent << " - l:" << r->less << " - r:" << r->more << "\n"; // 6
+		print2D(r->less, space); // Process left child  7
+	}
+
 // ITERATORS
 	iterator begin()	{
 		return iterator(tree.min_node());
@@ -93,18 +120,18 @@ public:
 		return iterator(LEAF);
 	}
 	const_iterator end() const	{
-		return iterator(LEAF);
+		return const_iterator(LEAF);
 	}
-	iterator rbegin()	{
+	reverse_iterator rbegin()	{
 		return reverse_iterator(LEAF);
 	}
-	const_iterator rbegin() const	{
+	const_reverse_iterator rbegin() const	{
 		return const_reverse_iterator(LEAF);
 	}
-	iterator rend()	{
+	reverse_iterator rend()	{
 		return reverse_iterator(tree.min_node());
 	}
-	const_iterator rend() const	{
+	const_reverse_iterator rend() const	{
 		return const_reverse_iterator(tree.min_node());
 	}
 
@@ -277,10 +304,8 @@ public:
 		return make_pair(lower_bound(k), upper_bound(k));
 	}
 
-private:
-	typedef	RB_node<value_type>	node_type;
-	typedef	RB_tree<value_type>	rb_tree;
 
+private:
 	size_type		_size;
 	rb_tree			tree;
 	allocator_type	A;
