@@ -1,6 +1,8 @@
 #ifndef RB_TREE_HPP
 # define RB_TREE_HPP
 
+
+//#define LEAF NULL
 #include "RB_node.hpp"
 
 namespace	ft
@@ -14,9 +16,20 @@ public:
 	typedef	RB_node<value_type>			node_type;
 
 	node_type		*root;
+	node_type		*LEAF;
 
-	RB_tree() : root(LEAF)	{}
-	~RB_tree()	{}
+	RB_tree()	{
+		LEAF = new node_type(value_type(), *this);
+		LEAF->color = BLACK;
+		LEAF->less = NULL;
+		LEAF->more = NULL;
+		LEAF->LEAF = LEAF;
+		root = LEAF;
+
+	}
+	~RB_tree()	{
+		delete LEAF;
+	}
 
 	void	insert(node_type *parent, node_type *&side_ref, node_type *n) {
 		side_ref = n;
@@ -37,10 +50,10 @@ public:
 		int y_original_color = y->color;
 		if (z->less == LEAF) {
 			x = z->more;
-			transplant(z, z->more);
+			transplant(z, x);
 		} else if (z->more == LEAF) {
 			x = z->less;
-			transplant(z, z->less);
+			transplant(z, x);
 		} else {
 			y = z->more->min_node();
 			y_original_color = y->color;
@@ -57,18 +70,17 @@ public:
 			y->less->parent = y;
 			y->color = z->color;
 		}
-		delete z;
 		if (y_original_color == BLACK) {
 			delete_fix_tree(x);
 		}
 	}
-
 	node_type	*max_node()	const {
 		return root->max_node();
 	}
 	node_type	*min_node()	const {
 		return root->min_node();
 	}
+
 
 private:
 
@@ -152,7 +164,7 @@ private:
 
 	void delete_fix_tree(node_type *x) {
 		node_type *s;
-		while (x->parent != NULL && x->color == BLACK) { // color
+		while (x != root && x->color == BLACK) {
 			if (x == x->parent->less) {
 				s = x->parent->more;
 				if (s->color == RED) {
@@ -209,7 +221,6 @@ private:
 		}
 		x->color = BLACK;
 	}
-
 };
 
 }

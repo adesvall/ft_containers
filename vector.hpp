@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/27 19:09:55 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/03/29 02:02:42 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,10 +315,10 @@ public:
 	}
 
 	void swap(vector& x)	{
-		swap(tab, x.tab);
-		swap(_size, x._size);
-		swap(_capacity, x._capacity);
-		swap(A, x.A);
+		ft::swap(tab, x.tab);
+		ft::swap(_size, x._size);
+		ft::swap(_capacity, x._capacity);
+		ft::swap(A, x.A);
 	}
 	
 	void	clear()	{

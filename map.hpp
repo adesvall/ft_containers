@@ -56,25 +56,26 @@ public:
 
 
 	explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
-	: _size(0), tree(), A(alloc), comp(comp)
+	: _size(0), tree(new rb_tree()), A(alloc), comp(comp)
 	{}
 			  
 	template <class InputIterator>
 	map(InputIterator first, InputIterator last,
 		const key_compare& comp = key_compare(),
 		const allocator_type& alloc = allocator_type())
-	:_size(0), tree(), A(alloc), comp(comp)
+	:_size(0), tree(new rb_tree()), A(alloc), comp(comp)
 	{
 		insert(first, last);
 	}
 		
 	map(const map& x)	
-	:_size(0), tree(), A(x.A), comp(x.comp)
+	:_size(0), tree(new rb_tree()), A(x.A), comp(x.comp)
 	{
 		insert(x.begin(), x.end());
 	}
 	virtual ~map()	{
 		clear();
+		delete tree;
 	}
 
 	map& operator=(const map& x)	{
@@ -88,15 +89,15 @@ public:
 
 	void printMap(void) // A SUPPRIMER
 	{
-		node_type * r = tree.root;
-		if (r == LEAF)
+		node_type * r = tree->root;
+		if (r == tree->LEAF)
 			std::cout << "RIEN DANS LARBRE !\n";
 		std::cout << "HEAD: " << r->value.first << " - n:" << r << " - p:" << r->parent << " - l:" << r->less << " - r:" << r->more << "\n"; // 6
 		print2D(r, 1);
 	}
 
 	void print2D(node_type *r, int space)	{
-		if (r == LEAF) // Base case  1
+		if (r == tree->LEAF) // Base case  1
 			return;
 		space += 2; // Increase distance between levels   2
 		print2D(r->more, space); // Process right child first 3 
@@ -105,34 +106,39 @@ public:
 		{
 			std::cout << "    "; // 5.1
 		}
-		std::cout << r->value.first << " - col:" << r->color  << " - n:" << r << " - p:" << r->parent << " - l:" << r->less << " - r:" << r->more << "\n"; // 6
+		std::cout << r->value.first << " - col:";
+		if (r->color)
+			std::cout << "BLACK";
+		else
+			std::cout << "\e[0;31mRED\e[0m";
+		std::cout << " - n:" << r << " - p:" << r->parent << " - l:" << r->less << " - r:" << r->more << "\n"; // 6
 		print2D(r->less, space); // Process left child  7
 	}
 
 // ITERATORS
 	iterator begin()	{
-		return iterator(tree.min_node());
+		return iterator(tree->min_node());
 	}
 	const_iterator begin() const	{
-		return const_iterator(tree.min_node());
+		return const_iterator(tree->min_node());
 	}
 	iterator end()	{
-		return iterator(LEAF);
+		return iterator(tree->LEAF);
 	}
 	const_iterator end() const	{
-		return const_iterator(LEAF);
+		return const_iterator(tree->LEAF);
 	}
 	reverse_iterator rbegin()	{
-		return reverse_iterator(LEAF);
+		return reverse_iterator(tree->LEAF);
 	}
 	const_reverse_iterator rbegin() const	{
-		return const_reverse_iterator(LEAF);
+		return const_reverse_iterator(tree->LEAF);
 	}
 	reverse_iterator rend()	{
-		return reverse_iterator(tree.min_node());
+		return reverse_iterator(tree->min_node());
 	}
 	const_reverse_iterator rend() const	{
-		return const_reverse_iterator(tree.min_node());
+		return const_reverse_iterator(tree->min_node());
 	}
 
 // CAPACITY
@@ -154,28 +160,28 @@ public:
 
 // ACCESS
 	mapped_type& operator[] (const key_type& k)	{
-		return (*((insert(make_pair(k, mapped_type()))).first)).second;
+		return (*((insert(ft::make_pair(k, mapped_type()))).first)).second;
 	}
 
 // MODIFIERS
 	pair<iterator,bool> insert (const value_type& val)	{
-		node_type **dst = &tree.root;
+		node_type **dst = &tree->root;
 		node_type *parent = NULL;
 
-		while (*dst != LEAF)	{
+		while (*dst != tree->LEAF)	{
 			parent = *dst;
 			if (comp(val.first, (*dst)->value.first))
 				dst = &(*dst)->less;
 			else if (comp((*dst)->value.first, val.first))
 				dst = &(*dst)->more;
 			else
-				return make_pair(iterator(*dst), false);
+				return ft::make_pair(iterator(*dst), false);
 		}
 		node_type *new_node = A.allocate(1);
-		A.construct(new_node, node_type(val));
-		tree.insert(parent, *dst, new_node);
+		A.construct(new_node, node_type(val, *tree));
+		tree->insert(parent, *dst, new_node);
 		_size++;
-		return make_pair(iterator(new_node), true);
+		return ft::make_pair(iterator(new_node), true);
 	}
 
 	iterator insert (iterator position, const value_type& val)	{
@@ -190,14 +196,14 @@ public:
 
 	void erase (iterator position)	{
 		node_type	*del = position.node();
-		tree.delete_node(del);
+		tree->delete_node(del);
 		A.destroy(del);
 		A.deallocate(del, 1);
 		_size--;
 	}
 	size_type erase (const key_type& k)	{
-		node_type *node = tree.get_node(k);
-		if (node == LEAF)
+		node_type *node = get_node(k);
+		if (node == tree->LEAF)
 			return 0;
 		erase(iterator(node));
 		return 1;
@@ -211,10 +217,15 @@ public:
 	}
 
 	void swap (map& x)	{
-		swap(_size, x._size);
-		swap(tree, x.tree);
-		swap(A, x.A);
-		swap(comp, x.comp);
+		ft::swap(_size, x._size);
+		ft::swap(tree, x.tree);
+		ft::swap(A, x.A);
+		ft::swap(comp, x.comp);
+	}
+
+	friend
+	void swap (map& x, map &y)	{
+		x.swap(y);
 	}
 
 	void clear()	{
@@ -237,27 +248,27 @@ public:
 // OPERATIONS
 	iterator find (const key_type& k)	{
 		node_type	*node = get_node(k);
-		if (node == LEAF)
+		if (node == tree->LEAF)
 			return end();
 		return iterator(node);
 	}
 	const_iterator find (const key_type& k) const	{
 		node_type	*node = get_node(k);
-		if (node == LEAF)
+		if (node == tree->LEAF)
 			return end();
 		return const_iterator(node);
 	}
 	
 	size_type count (const key_type& k) const	{
 		node_type	*node = get_node(k);
-		if (node == LEAF)
+		if (node == tree->LEAF)
 			return 0;
 		return 1;
 	}
 
 	iterator 	lower_bound(const key_type& k)	{
 		pair<node_type*, node_type*> res = get_node_parent(k);
-		if (res.first != LEAF)
+		if (res.first != tree->LEAF)
 			return iterator(res.first);
 		if (res.second == NULL)
 			return end();
@@ -267,7 +278,7 @@ public:
 	}
 	const_iterator lower_bound(const key_type& k) const	{
 		pair<node_type*, node_type*> res = get_node_parent(k);
-		if (res.first != LEAF)
+		if (res.first != tree->LEAF)
 			return const_iterator(res.first);
 		if (res.second == NULL)
 			return end();
@@ -278,23 +289,23 @@ public:
 
 	iterator upper_bound (const key_type& k)	{
 		pair<node_type*, node_type*> res = get_node_parent(k);
-		if (res.first != LEAF)
-			return iterator(res.first);
+		if (res.first != tree->LEAF)
+			return ++iterator(res.first);
 		if (res.second == NULL)
 			return end();
 		if (comp(k, res.second->value.first))
 			return iterator(res.second);
-		return --iterator(res.second);
+		return ++iterator(res.second);
 	}
 	const_iterator upper_bound (const key_type& k) const	{
 		pair<node_type*, node_type*> res = get_node_parent(k);
-		if (res.first != LEAF)
-			return const_iterator(res.first);
+		if (res.first != tree->LEAF)
+			return const_iterator(res.first->successor());
 		if (res.second == NULL)
 			return end();
 		if (comp(k, res.second->value.first))
 			return const_iterator(res.second);
-		return --const_iterator(res.second);
+		return ++const_iterator(res.second);
 	}
 
 	pair<const_iterator,const_iterator> equal_range (const key_type& k) const	{
@@ -304,18 +315,52 @@ public:
 		return make_pair(lower_bound(k), upper_bound(k));
 	}
 
+// REL. OPERATORS
+	friend
+	bool operator== (const map& lhs, const map& rhs)	{
+		if (lhs._size != rhs._size)
+			return false;
+		return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+	}
+
+	friend
+	bool operator!= (const map& lhs, const map& rhs)	{
+		return !(lhs == rhs);
+	}
+	
+	friend
+	bool operator<  (const map& lhs, const map& rhs)	{
+		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	}
+
+	friend
+	bool operator<= (const map& lhs, const map& rhs)	{
+		return !(rhs < lhs);
+	}
+
+	friend
+	bool operator>  (const map& lhs, const map& rhs)	{
+		return rhs < lhs;
+	}
+
+	friend
+	bool operator>= (const map& lhs, const map& rhs)	{
+		return !(lhs < rhs);
+	}
+
 
 private:
 	size_type		_size;
-	rb_tree			tree;
+	rb_tree			*tree;
 	allocator_type	A;
 	key_compare		comp;
-	// RB_node			leaf;
 
-	node_type *get_node(key_type& key)	{
-		node_type	*n = tree.root;
 
-		while (n != LEAF)	{
+
+	node_type *get_node(const key_type& key) const	{
+		node_type	*n = tree->root;
+
+		while (n != tree->LEAF)	{
 			if (comp(n->value.first, key))
 				n = n->more;
 			else if (comp(key, n->value.first))
@@ -327,10 +372,10 @@ private:
 	}
 
 	pair<node_type*, node_type*>	get_node_parent(const key_type& key) const	{
-		node_type	*n = tree.root;
+		node_type	*n = tree->root;
 		node_type	*parent = NULL;
 	
-		while (n != LEAF)	{
+		while (n != tree->LEAF)	{
 			if (comp(n->value.first, key))	{
 				parent = n;
 				n = n->more;
