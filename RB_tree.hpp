@@ -19,13 +19,12 @@ public:
 	node_type		*LEAF;
 
 	RB_tree()	{
-		LEAF = new node_type(value_type(), *this);
+		LEAF = new node_type(NULL, *this);
 		LEAF->color = BLACK;
 		LEAF->less = NULL;
 		LEAF->more = NULL;
 		LEAF->LEAF = LEAF;
 		root = LEAF;
-
 	}
 	~RB_tree()	{
 		delete LEAF;

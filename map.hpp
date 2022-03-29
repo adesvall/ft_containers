@@ -15,7 +15,7 @@ namespace	ft
 template < class Key,                                     // map::key_type
            class T,                                       // map::mapped_type
            class Compare = std::less<Key>,                     // map::key_compare
-           class Alloc = std::allocator< RB_node<pair<const Key,T> > >    // map::allocator_type
+           class Alloc = std::allocator< pair<const Key,T> >    // map::allocator_type
            >
 class map
 {
@@ -92,7 +92,7 @@ public:
 		node_type * r = tree->root;
 		if (r == tree->LEAF)
 			std::cout << "RIEN DANS LARBRE !\n";
-		std::cout << "HEAD: " << r->value.first << " - n:" << r << " - p:" << r->parent << " - l:" << r->less << " - r:" << r->more << "\n"; // 6
+		std::cout << "HEAD: " << r->value->first << " - n:" << r << " - p:" << r->parent << " - l:" << r->less << " - r:" << r->more << "\n"; // 6
 		print2D(r, 1);
 	}
 
@@ -106,7 +106,7 @@ public:
 		{
 			std::cout << "    "; // 5.1
 		}
-		std::cout << r->value.first << " - col:";
+		std::cout << r->value->first << " - col:";
 		if (r->color)
 			std::cout << "BLACK";
 		else
@@ -150,7 +150,7 @@ public:
 	}
 	size_type max_size() const	{
 		try	{
-			return A.max_size();
+			return node_A.max_size();
 		}
 		catch(const std::exception& e)	{
 			std::cerr << e.what() << '\n';
@@ -170,15 +170,17 @@ public:
 
 		while (*dst != tree->LEAF)	{
 			parent = *dst;
-			if (comp(val.first, (*dst)->value.first))
+			if (comp(val.first, (*dst)->value->first))
 				dst = &(*dst)->less;
-			else if (comp((*dst)->value.first, val.first))
+			else if (comp((*dst)->value->first, val.first))
 				dst = &(*dst)->more;
 			else
 				return ft::make_pair(iterator(*dst), false);
 		}
-		node_type *new_node = A.allocate(1);
-		A.construct(new_node, node_type(val, *tree));
+		value_type *new_val = A.allocate(1);
+		A.construct(new_val, val);
+		node_type *new_node = node_A.allocate(1);
+		node_A.construct(new_node, node_type(new_val, *tree));
 		tree->insert(parent, *dst, new_node);
 		_size++;
 		return ft::make_pair(iterator(new_node), true);
@@ -197,8 +199,11 @@ public:
 	void erase (iterator position)	{
 		node_type	*del = position.node();
 		tree->delete_node(del);
-		A.destroy(del);
-		A.deallocate(del, 1);
+
+		A.destroy(del->value);
+		A.deallocate(del->value, 1);
+		node_A.destroy(del);
+		node_A.deallocate(del, 1);
 		_size--;
 	}
 	size_type erase (const key_type& k)	{
@@ -272,7 +277,7 @@ public:
 			return iterator(res.first);
 		if (res.second == NULL)
 			return end();
-		if (!comp(res.second->value.first, k))
+		if (!comp(res.second->value->first, k))
 			return iterator(res.second);
 		return ++iterator(res.second);
 	}
@@ -282,7 +287,7 @@ public:
 			return const_iterator(res.first);
 		if (res.second == NULL)
 			return end();
-		if (!comp(res.second->value.first, k))
+		if (!comp(res.second->value->first, k))
 			return const_iterator(res.second);
 		return ++const_iterator(res.second);
 	}
@@ -293,7 +298,7 @@ public:
 			return ++iterator(res.first);
 		if (res.second == NULL)
 			return end();
-		if (comp(k, res.second->value.first))
+		if (comp(k, res.second->value->first))
 			return iterator(res.second);
 		return ++iterator(res.second);
 	}
@@ -303,7 +308,7 @@ public:
 			return const_iterator(res.first->successor());
 		if (res.second == NULL)
 			return end();
-		if (comp(k, res.second->value.first))
+		if (comp(k, res.second->value->first))
 			return const_iterator(res.second);
 		return ++const_iterator(res.second);
 	}
@@ -354,6 +359,7 @@ private:
 	rb_tree			*tree;
 	allocator_type	A;
 	key_compare		comp;
+	std::allocator<node_type>	node_A;
 
 
 
@@ -361,9 +367,9 @@ private:
 		node_type	*n = tree->root;
 
 		while (n != tree->LEAF)	{
-			if (comp(n->value.first, key))
+			if (comp(n->value->first, key))
 				n = n->more;
-			else if (comp(key, n->value.first))
+			else if (comp(key, n->value->first))
 				n = n->less;
 			else
 				return n;
@@ -376,11 +382,11 @@ private:
 		node_type	*parent = NULL;
 	
 		while (n != tree->LEAF)	{
-			if (comp(n->value.first, key))	{
+			if (comp(n->value->first, key))	{
 				parent = n;
 				n = n->more;
 			}
-			else if (comp(key, n->value.first))	{
+			else if (comp(key, n->value->first))	{
 				parent = n;
 				n = n->less;
 			}

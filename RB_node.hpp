@@ -19,7 +19,7 @@ struct RB_node
 {
 	typedef T	value_type;
 
-	value_type		value;
+	value_type		*value;
 	color			color;
 	RB_node			*less;
 	RB_node			*more;
@@ -27,7 +27,7 @@ struct RB_node
 	RB_node			**root_p;
 	RB_node			*LEAF;
 
-	RB_node(const value_type	&val, RB_tree<T> &tree)
+	RB_node(value_type	*val, RB_tree<T> &tree)
 	: value(val), color(RED), less(tree.LEAF), more(tree.LEAF), parent(NULL), root_p(&tree.root), LEAF(tree.LEAF)	{}
 	~RB_node()	{}
 
