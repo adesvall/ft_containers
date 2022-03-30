@@ -9,7 +9,7 @@ namespace ft
 template <typename T>
 struct RB_tree;
 
-enum	color	{
+enum	Color	{
 	RED,
 	BLACK,
 };
@@ -20,7 +20,7 @@ struct RB_node
 	typedef T	value_type;
 
 	value_type		*value;
-	color			color;
+	Color			color;
 	RB_node			*less;
 	RB_node			*more;
 	RB_node 		*parent;
