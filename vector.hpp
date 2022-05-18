@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/03/29 02:02:42 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/05/18 22:29:44 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ public:
 	typedef size_t	size_type;
 
 	explicit vector(const allocator_type& alloc = allocator_type())
-	: tab(NULL), _size(0), _capacity(1), A(alloc)
+	: tab(NULL), _size(0), _capacity(0), A(alloc)
 	{
-		tab = A.allocate(1);	
+		// tab = A.allocate(1);	
 	}
 	
 	explicit vector(size_type n, const value_type& val = value_type(),
@@ -60,8 +60,8 @@ public:
 	vector(InputIterator first, InputIterator last,
  			const allocator_type& alloc = allocator_type()) {
 		A = alloc;
-		tab = A.allocate(1);
-		_capacity = 1;
+		tab = NULL;
+		_capacity = 0;
 		_size = 0;
 		assign(first, last);
 	}
@@ -82,15 +82,13 @@ public:
 	}
 
 	vector	&operator=(const vector& v)	{
+		reserve(v.size());
+		
 		destroy_content();
-		A.deallocate(tab, _capacity);
-		A = v.A;
-		_size = v._size;
-		_capacity = v._capacity;
-		tab = A.allocate(v._capacity);
-		for (size_type i = 0; i < _size; i++)	{
+		for (size_type i = 0; i < v._size; i++)	{
 			A.construct(&tab[i], v.tab[i]);
 		}
+		_size = v._size;
 		return *this;
 	}
 
@@ -162,8 +160,14 @@ public:
 	void	reserve(size_type n)	{
 		if (n <= _capacity)
 			return ;
-		size_type new_capacity = _capacity;
-		while (new_capacity <= n)
+		if (tab == NULL)
+		{
+			tab = A.allocate(n);
+			_capacity = n;
+			return ;
+		}
+		size_type new_capacity = _capacity + 1;
+		while (new_capacity < n)
 			new_capacity *= 2;
 		n = new_capacity;
 		value_type* new_tab = A.allocate(n);

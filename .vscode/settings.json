@@ -53,6 +53,8 @@
 		"map": "cpp",
 		"set": "cpp",
 		"queue": "cpp",
-		"iostream": "cpp"
+		"iostream": "cpp",
+		"compare": "cpp",
+		"concepts": "cpp"
 	}
 }
