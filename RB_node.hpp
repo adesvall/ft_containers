@@ -31,8 +31,6 @@ struct RB_node
 	: value(val), color(RED), less(tree.LEAF), more(tree.LEAF), parent(NULL), root_p(&tree.root), LEAF(tree.LEAF)	{}
 	~RB_node()	{}
 
-	//operator RB_node<const T> ()	{return RB_node<const T>()}
-
 	RB_node	*grandparent()	{
 		if (parent == NULL)
 			return NULL;

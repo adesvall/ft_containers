@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <deque>
-#if 1 //CREATE A REAL STL EXAMPLE
+#if 0 //CREATE A REAL STL EXAMPLE
 	#include <map>
 	#include <stack>
 	#include <vector>
@@ -25,7 +25,7 @@ struct Buffer
 };
 
 
-#define COUNT 10000//(MAX_RAM / (int)sizeof(Buffer))
+#define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 template<typename T>
 class MutantStack : public ft::stack<T>
@@ -65,7 +65,10 @@ int main(int argc, char** argv) {
 	ft::vector<Buffer> vector_buffer;
 	ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
 	ft::map<int, int> map_int;
+	std::cout << "Construction OK." << std::endl;
 
+	std::cout << std::endl;
+	
 	for (int i = 0; i < COUNT; i++)
 	{
 		vector_buffer.push_back(Buffer());

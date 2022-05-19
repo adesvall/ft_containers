@@ -6,7 +6,7 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/05/18 22:29:44 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/05/19 20:12:54 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,8 @@ public:
 	void	reserve(size_type n)	{
 		if (n <= _capacity)
 			return ;
+		if (n > this->max_size())
+			throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
 		if (tab == NULL)
 		{
 			tab = A.allocate(n);
@@ -167,16 +169,16 @@ public:
 			return ;
 		}
 		size_type new_capacity = _capacity + 1;
-		while (new_capacity < n)
+		while (new_capacity < n+1)
 			new_capacity *= 2;
-		n = new_capacity;
-		value_type* new_tab = A.allocate(n);
+
+		value_type* new_tab = A.allocate(new_capacity);
 		for (size_type i = 0; i < _size; i++)	{
 			A.construct(&new_tab[i], tab[i]);
 			A.destroy(&tab[i]);
 		}
 		A.deallocate(tab, _capacity);
-		_capacity = n;
+		_capacity = new_capacity;
 		tab = new_tab;
 	}
 
@@ -248,7 +250,6 @@ public:
 		for (; it != position; it--)
 		{
 			A.construct(&(*it), *(it - 1));
-			// std::cout << *it;
 			A.destroy(&(*(it - 1)));
 		}
 		A.construct(&(*it), val);
