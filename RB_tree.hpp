@@ -2,7 +2,7 @@
 # define RB_TREE_HPP
 
 
-//#define LEAF NULL
+#include <string>
 #include "RB_node.hpp"
 
 namespace	ft

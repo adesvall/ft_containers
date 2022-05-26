@@ -6,19 +6,20 @@
 /*   By: adesvall <adesvall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 00:36:33 by adesvall          #+#    #+#             */
-/*   Updated: 2022/05/19 20:12:54 by adesvall         ###   ########.fr       */
+/*   Updated: 2022/05/26 18:59:58 by adesvall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_H
 # define VECTOR_H
 
-#include <memory>
 #include "random_access_iterator.hpp"
 #include "reverse_iterator.hpp"
-
-#include <iterator>
 #include "utils.hpp"
+
+#include <memory>
+#include <iostream>
+#include <iterator>
 #include <limits>
 
 namespace ft {
@@ -276,9 +277,8 @@ public:
 	}
 	
 	template <class InputIterator>
-    void insert (iterator position, typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first,
-									InputIterator last)	{
-		typename InputIterator::difference_type n = ft::distance(first, last);
+    void insert (iterator position, InputIterator first, InputIterator last, typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type* = NULL)	{
+		typename iterator_traits<InputIterator>::difference_type n = ft::distance(first, last);
 		difference_type i = distance(begin(), position);
 		reserve(_size + n);
 		position = begin() + i;

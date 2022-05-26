@@ -1,6 +1,8 @@
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
+#include "iterator_traits.hpp"
+
 namespace ft
 {
 
@@ -37,8 +39,8 @@ struct choose<false, IsTrue, IsFalse> {
 
 
 template <typename I>
-typename I::difference_type	distance(I first, I last)	{
-	typename I::difference_type dist = 0;
+typename iterator_traits<I>::difference_type	distance(I first, I last)	{
+	typename iterator_traits<I>::difference_type dist = 0;
 
 	while (first != last)
 	{
