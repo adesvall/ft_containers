@@ -87,34 +87,6 @@ public:
 		return *this;
 	}
 
-	void printMap(void) // A SUPPRIMER
-	{
-		node_type * r = tree->root;
-		if (r == tree->LEAF)
-			std::cout << "RIEN DANS LARBRE !\n";
-		std::cout << "HEAD: " << r->value->first << " - n:" << r << " - p:" << r->parent << " - l:" << r->less << " - r:" << r->more << "\n"; // 6
-		print2D(r, 1);
-	}
-
-	void print2D(node_type *r, int space)	{
-		if (r == tree->LEAF) // Base case  1
-			return;
-		space += 2; // Increase distance between levels   2
-		print2D(r->more, space); // Process right child first 3 
-		std::cout << std::endl;
-		for (int i = 1; i < space; i++) // 5 
-		{
-			std::cout << "    "; // 5.1
-		}
-		std::cout << r->value->first << " - col:";
-		if (r->color)
-			std::cout << "BLACK";
-		else
-			std::cout << "\e[0;31mRED\e[0m";
-		std::cout << " - n:" << r << " - p:" << r->parent << " - l:" << r->less << " - r:" << r->more << "\n"; // 6
-		print2D(r->less, space); // Process left child  7
-	}
-
 // ITERATORS
 	iterator begin()	{
 		return iterator(tree->min_node());

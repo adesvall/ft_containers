@@ -2,16 +2,16 @@
 # define ITERATOR_TRAITS_HPP
 
 # include <stddef.h>
+#include <iterator>
 
 namespace ft
 {
 
-class input_iterator_tag	{};
-class ouput_iterator_tag	{};
-class forward_iterator_tag	{};
-class bidirectional_iterator_tag	{};
-class random_access_iterator_tag	{};
-
+// class input_iterator_tag	{};
+// class ouput_iterator_tag	{};
+// class forward_iterator_tag	{};
+// class bidirectional_iterator_tag	{};
+// class random_access_iterator_tag	{};
 
 template <typename Iterator>
 class iterator_traits
@@ -33,7 +33,7 @@ public:
 	typedef T							value_type;
 	typedef T*							pointer;
 	typedef T&							reference;
-	typedef random_access_iterator_tag	iterator_category;
+	typedef std::random_access_iterator_tag	iterator_category;
 
 };
 
@@ -45,7 +45,7 @@ public:
 	typedef T							value_type;
 	typedef const T*					pointer;
 	typedef const T&					reference;
-	typedef random_access_iterator_tag	iterator_category;
+	typedef std::random_access_iterator_tag	iterator_category;
 
 };
 

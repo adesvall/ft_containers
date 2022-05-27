@@ -11,11 +11,11 @@ template <bool isConst, class T>
 class	random_access_iterator
 {
 public:
-	typedef	long int	difference_type;
+	typedef	long int											difference_type;
 	typedef typename choose<isConst, const T, T>::type			value_type;
 	typedef value_type*											pointer;
 	typedef value_type&											reference;
-	typedef random_access_iterator_tag							iterator_category;
+	typedef std::random_access_iterator_tag						iterator_category;
 
 	random_access_iterator() : ptr(NULL)	{}
 	random_access_iterator(value_type *ptr) : ptr(ptr)	{}

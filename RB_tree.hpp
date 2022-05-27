@@ -1,6 +1,7 @@
 #ifndef RB_TREE_HPP
 # define RB_TREE_HPP
 
+	#include <iostream>
 
 #include <string>
 #include "RB_node.hpp"
@@ -43,6 +44,7 @@ public:
 	}
 
 	void delete_node(node_type *z) {
+		// printMap();
 		node_type *x, *y;
 
 		y = z;
@@ -73,9 +75,11 @@ public:
 			delete_fix_tree(x);
 		}
 	}
+
 	node_type	*max_node()	const {
 		return root->max_node();
 	}
+
 	node_type	*min_node()	const {
 		return root->min_node();
 	}
@@ -220,6 +224,7 @@ private:
 		}
 		x->color = BLACK;
 	}
+
 };
 
 }

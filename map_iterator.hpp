@@ -18,7 +18,7 @@ public:
 	typedef	RB_node<value_type>									node_type;
 	typedef value_type*											pointer;
 	typedef value_type&											reference;
-	typedef bidirectional_iterator_tag							iterator_category;
+	typedef std::bidirectional_iterator_tag							iterator_category;
 
 	map_iterator() : _node(NULL)	{}
 	map_iterator(void *node) : _node(static_cast<node_type*>(node))	{}
