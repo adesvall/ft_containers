@@ -44,7 +44,6 @@ public:
 	}
 
 	void delete_node(node_type *z) {
-		// printMap();
 		node_type *x, *y;
 
 		y = z;
@@ -168,6 +167,7 @@ private:
 	void delete_fix_tree(node_type *x) {
 		node_type *s;
 		while (x != root && x->color == BLACK) {
+			// std::cerr << 
 			if (x == x->parent->less) {
 				s = x->parent->more;
 				if (s->color == RED) {
@@ -176,7 +176,9 @@ private:
 					rotate_left(x->parent);
 					s = x->parent->more;
 				}
-
+				if (s == LEAF)
+					return;
+				
 				if (s->less->color == BLACK && s->more->color == BLACK) {
 					s->color = RED;
 					x = x->parent;
@@ -194,6 +196,7 @@ private:
 					rotate_left(x->parent);
 					x = root;
 				}
+			
 			} else {
 				s = x->parent->less;
 				if (s->color == RED) {
@@ -202,6 +205,8 @@ private:
 					rotate_right(x->parent);
 					s = x->parent->less;
 				}
+				if (s == LEAF)
+					return;
 
 				if (s->more->color == BLACK && s->more->color == BLACK) {
 					s->color = RED;

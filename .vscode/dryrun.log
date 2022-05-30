@@ -1,6 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/adesvall/Documents/42cursus/ft_containers'
-c++ -std=c++98 -Wall -Wextra -Werror -I. official_main.cpp -o ft_stl
-c++ -std=c++98 -Wall -Wextra -Werror -I. -D STD official_main.cpp -o std_stl
-make: Leaving directory '/home/adesvall/Documents/42cursus/ft_containers'
- 
