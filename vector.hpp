@@ -378,10 +378,6 @@ public:
 		return !(lhs < rhs);
 	}
 
-	friend
-	void swap (vector& x, vector& y)	{
-		x.swap(y);
-	}
 
 private:
 	value_type		*tab;
@@ -397,6 +393,11 @@ private:
 		_size = begin;
 	}
 };
+
+template<class T>
+void swap (vector<T>& x, vector<T>& y)	{
+	x.swap(y);
+}
 
 }
 

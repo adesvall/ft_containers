@@ -200,10 +200,6 @@ public:
 		ft::swap(comp, x.comp);
 	}
 
-	friend
-	void swap (map& x, map &y)	{
-		x.swap(y);
-	}
 
 	void clear()	{
 		erase(begin(), end());
@@ -369,6 +365,11 @@ private:
 	}
 
 };
+
+template <class Key, class T>
+void swap (map<Key, T>& x, map<Key, T> &y)	{
+	x.swap(y);
+}
 
 }
 
